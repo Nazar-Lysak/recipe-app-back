@@ -3,12 +3,14 @@ import {
   Controller,
   Get,
   Post,
+  Req,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { loginUserDto } from './dto/loginUser.dto';
+import type { AuthRequest } from '@/types/expressRequest.interface';
 
 @Controller('user')
 export class UserController {
@@ -17,6 +19,11 @@ export class UserController {
   @Get()
   getAllUsers() {
     return this.userService.getAllUsers();
+  }
+
+  @Get('current')
+  getCurrentUser(@Req() request: AuthRequest) {
+    return this.userService.getCurrentUser(request.user);
   }
 
   @UsePipes(new ValidationPipe())

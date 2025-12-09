@@ -26,6 +26,18 @@ export class UserService {
     return { users: createResult };
   }
 
+  async getCurrentUser(user: any) {
+    // Need to get data from user personal info table;
+    if (!user) {
+      throw new HttpException(
+        'No authenticated user found',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    return `Current user: ${user.id} - ${user.email}`;
+  }
+
   async createUser(createUserDto: CreateUserDto): Promise<any> {
     const { email, username } = createUserDto;
 
@@ -54,6 +66,8 @@ export class UserService {
 
     const savedUser = await this.userRepository.save(newUser);
 
+    delete savedUser.password;
+
     return this.generateUserResponse(savedUser);
   }
 
@@ -76,6 +90,19 @@ export class UserService {
     return this.generateUserResponse(user);
   }
 
+  findById(id: string): Promise<any> {
+    const user = this.userRepository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new HttpException(
+        `User with id ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return user;
+  }
+
   generateToken(user: UserEntity): string {
     const token = sign(
       {
@@ -91,6 +118,9 @@ export class UserService {
   }
 
   generateUserResponse(user: UserEntity) {
+    if (!user.id) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     return {
       user: {
         ...user,
