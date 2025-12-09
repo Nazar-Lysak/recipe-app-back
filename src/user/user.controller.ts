@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Req,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { loginUserDto } from './dto/loginUser.dto';
 import type { AuthRequest } from '@/types/expressRequest.interface';
+import { AuthGuard } from './guards/auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -22,6 +24,7 @@ export class UserController {
   }
 
   @Get('current')
+  @UseGuards(AuthGuard)
   getCurrentUser(@Req() request: AuthRequest) {
     return this.userService.getCurrentUser(request.user);
   }
