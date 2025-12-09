@@ -7,6 +7,8 @@ import { UserEntity } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import { env } from 'process';
 import { loginUserDto } from './dto/loginUser.dto';
+import { UserProfile } from './entity/user-profile.entity';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 const saltOrRounds = 10;
 
@@ -15,6 +17,8 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    @InjectRepository(UserProfile)
+    private userProfileRepository: Repository<UserProfile>,
   ) {}
 
   async getAllUsers() {
@@ -27,7 +31,6 @@ export class UserService {
   }
 
   async getCurrentUser(user: any) {
-    // Need to get data from user personal info table;
     if (!user) {
       throw new HttpException(
         'No authenticated user found',
@@ -35,7 +38,33 @@ export class UserService {
       );
     }
 
-    return `Current user: ${user.id} - ${user.email}`;
+    const userProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: user.id } },
+    });
+
+    delete user.password;
+
+    return { profile: { ...user, ...userProfile } };
+  }
+
+  async updateUser(user: any, updateUserDto: UpdateUserDto) {
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    delete user.password;
+
+    const currentUserProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: user.id } },
+    });
+
+    if (!currentUserProfile) {
+      throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    Object.assign(currentUserProfile, updateUserDto);
+
+    return await this.userProfileRepository.save(currentUserProfile);
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<any> {
@@ -65,6 +94,11 @@ export class UserService {
     Object.assign(newUser, createUserDto);
 
     const savedUser = await this.userRepository.save(newUser);
+
+    // Create user profile
+    const newProfile = new UserProfile();
+    newProfile.user = savedUser;
+    await this.userProfileRepository.save(newProfile);
 
     delete savedUser.password;
 

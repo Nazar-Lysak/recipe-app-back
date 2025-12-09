@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Req,
   UseGuards,
   UsePipes,
@@ -13,6 +14,7 @@ import { CreateUserDto } from './dto/createUser.dto';
 import { loginUserDto } from './dto/loginUser.dto';
 import type { AuthRequest } from '@/types/expressRequest.interface';
 import { AuthGuard } from './guards/auth.guard';
+import { UpdateUserDto } from './dto/updateUser.dto';
 
 @Controller('user')
 export class UserController {
@@ -27,6 +29,16 @@ export class UserController {
   @UseGuards(AuthGuard)
   getCurrentUser(@Req() request: AuthRequest) {
     return this.userService.getCurrentUser(request.user);
+  }
+
+  @UsePipes(new ValidationPipe())
+  @Put('current')
+  @UseGuards(AuthGuard)
+  updateCurrentUser(
+    @Req() request: AuthRequest,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.updateUser(request.user, updateUserDto);
   }
 
   @UsePipes(new ValidationPipe())

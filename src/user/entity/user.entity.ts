@@ -4,8 +4,10 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { UserProfile } from './user-profile.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -20,6 +22,9 @@ export class UserEntity {
 
   @Column()
   password?: string;
+
+  @OneToOne(() => UserProfile, (profile) => profile.user)
+  profile: UserProfile;
 
   @BeforeInsert()
   @BeforeUpdate()
