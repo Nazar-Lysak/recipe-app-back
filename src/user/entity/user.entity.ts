@@ -4,10 +4,12 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserProfile } from './user-profile.entity';
+import { RecipeEntity } from '@/recipe/entity/recipe.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -25,6 +27,9 @@ export class UserEntity {
 
   @OneToOne(() => UserProfile, (profile) => profile.user)
   profile: UserProfile;
+
+  @OneToMany(() => RecipeEntity, (recipe) => recipe.author)
+  recipes: RecipeEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()
