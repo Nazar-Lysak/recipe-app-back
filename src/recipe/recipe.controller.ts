@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
   UsePipes,
@@ -38,8 +39,8 @@ export class RecipeController {
   }
 
   @Get()
-  getRecipes() {
-    return this.recipeService.getRecipes();
+  getRecipes(@Query() query): Promise<any> {
+    return this.recipeService.getRecipes(query);
   }
 
   @Get(':id')

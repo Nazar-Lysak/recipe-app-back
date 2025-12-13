@@ -10,6 +10,7 @@ import { DeleteResult, Repository } from 'typeorm';
 import { UserEntity } from '@/user/entity/user.entity';
 import { CreateRecipeDto } from './dto/createRecipe.dto';
 import { UpdateRecipeDto } from './dto/updateRecipe.dto';
+import { count } from 'console';
 
 @Injectable()
 export class RecipeService {
@@ -38,8 +39,33 @@ export class RecipeService {
     return this.recipeRepository.save(recipe);
   }
 
-  getRecipes() {
-    return this.recipeRepository.find();
+  async getRecipes(query) {
+    const queryBuilder = this.recipeRepository
+        .createQueryBuilder('recipe')
+        .leftJoinAndSelect('recipe.author', 'author');
+
+    if(query.category) {
+        queryBuilder.andWhere('recipe.category LIKE :category', { category: `%${query.category}%` });
+    }
+
+    if(query.author) {
+        queryBuilder.andWhere('author.username = :author', { author: query.author });
+    }
+
+    if(query.limit) {
+        queryBuilder.limit(parseInt(query.limit));
+    }
+
+    if(query.offset) {
+        queryBuilder.offset(parseInt(query.offset));
+    }
+
+    queryBuilder.orderBy('recipe.createdAt', 'DESC');
+
+    const recipesList = await queryBuilder.getMany();
+    const recipesCount = await queryBuilder.getCount();
+
+    return {recipesList, recipesCount};
   }
 
   async getRecipeById(id: string): Promise<RecipeEntity> {
