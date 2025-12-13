@@ -9,6 +9,7 @@ import { env } from 'process';
 import { loginUserDto } from './dto/loginUser.dto';
 import { UserProfile } from './entity/user-profile.entity';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { nanoid } from 'nanoid';
 
 const saltOrRounds = 10;
 
@@ -122,6 +123,16 @@ export class UserService {
     delete user.password;
 
     return this.generateUserResponse(user);
+  }
+
+  async forgotPassword(email: string): Promise<any> {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (user) {
+      const resetToken = nanoid(64);
+      console.log(resetToken);
+    }
+
+    return {message: 'A password reset link has been sent to your email address if it exists in our system.'};
   }
 
   findById(id: string): Promise<any> {

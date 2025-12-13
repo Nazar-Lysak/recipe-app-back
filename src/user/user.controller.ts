@@ -15,6 +15,7 @@ import { loginUserDto } from './dto/loginUser.dto';
 import type { AuthRequest } from '@/types/expressRequest.interface';
 import { AuthGuard } from './guards/auth.guard';
 import { UpdateUserDto } from './dto/updateUser.dto';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 
 @Controller('user')
 export class UserController {
@@ -51,5 +52,10 @@ export class UserController {
   @Post('login')
   loginUser(@Body() loginUserDto: loginUserDto): Promise<any> {
     return this.userService.loginUser(loginUserDto);
+  }
+
+  @Post('forgot-password')
+  forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<any> {
+    return this.userService.forgotPassword(forgotPasswordDto.email);
   }
 }

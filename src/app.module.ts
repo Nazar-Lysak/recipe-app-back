@@ -3,6 +3,7 @@ import { UserModule } from '@/user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { CategoryModule } from './category/category.module';
+import { RecipeModule } from './recipe/recipe.module';
 import dbConfigProd from './config/db.config.prod';
 import dbConfigDev from '@/config/db.config.dev';
 
@@ -19,6 +20,7 @@ import dbConfigDev from '@/config/db.config.dev';
     }),
     UserModule,
     CategoryModule,
+    RecipeModule,
   ],
 })
 export class AppModule {}
