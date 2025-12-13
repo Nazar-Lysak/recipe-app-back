@@ -7,6 +7,6 @@ import { RecipeEntity } from './entity/recipe.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([RecipeEntity])],
   providers: [RecipeService],
-  controllers: [RecipeController]
+  controllers: [RecipeController],
 })
 export class RecipeModule {}

@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import { CreateRecipeDto } from './dto/createRecipe.dto';
 import { UserEntity } from '@/user/entity/user.entity';
@@ -6,33 +18,60 @@ import { RecipeEntity } from './entity/recipe.entity';
 import { AuthGuard } from '@/user/guards/auth.guard';
 import { getSingleRecipeDto } from './dto/getSingleRecipe.dto';
 import { DeleteResult } from 'typeorm';
+import { UpdateRecipeDto } from './dto/updateRecipe.dto';
 
 @Controller('recipe')
 export class RecipeController {
-    constructor(private readonly recipeService: RecipeService) {}
+  constructor(private readonly recipeService: RecipeService) {}
 
-    @Post()
-    @UsePipes(new ValidationPipe())
-    @UseGuards(AuthGuard)
-    createRecipe(@Req() req, @Body('recipe') createRecipeDto: CreateRecipeDto): Promise<RecipeEntity> {
-        return this.recipeService.createRecipe(req.user as UserEntity, createRecipeDto as CreateRecipeDto);
-    }
+  @Post()
+  @UsePipes(new ValidationPipe())
+  @UseGuards(AuthGuard)
+  createRecipe(
+    @Req() req,
+    @Body('recipe') createRecipeDto: CreateRecipeDto,
+  ): Promise<RecipeEntity> {
+    return this.recipeService.createRecipe(
+      req.user as UserEntity,
+      createRecipeDto as CreateRecipeDto,
+    );
+  }
 
-    @Get()
-    getRecipes() {
-        return this.recipeService.getRecipes();
-    }
+  @Get()
+  getRecipes() {
+    return this.recipeService.getRecipes();
+  }
 
-    @Get(':id')
-    @UsePipes(new ValidationPipe())
-    async getRecipeById(@Param() param: getSingleRecipeDto):Promise<RecipeEntity> {
-        return this.recipeService.getRecipeById(param.id);
-    }
+  @Get(':id')
+  @UsePipes(new ValidationPipe())
+  async getRecipeById(
+    @Param() param: getSingleRecipeDto,
+  ): Promise<RecipeEntity> {
+    return this.recipeService.getRecipeById(param.id);
+  }
 
-    @Delete(':id')
-    @UsePipes(new ValidationPipe())
-    @UseGuards(AuthGuard)
-    async deleteRecipe(@Req() req, @Param() param: getSingleRecipeDto): Promise<DeleteResult> {
-        return this.recipeService.deleteRecipe(req.user as UserEntity, param.id);
-    }
+  @Delete(':id')
+  @UsePipes(new ValidationPipe())
+  @UseGuards(AuthGuard)
+  async deleteRecipe(
+    @Req() req,
+    @Param() param: getSingleRecipeDto,
+  ): Promise<DeleteResult> {
+    return this.recipeService.deleteRecipe(req.user as UserEntity, param.id);
+  }
+
+  @Put(':id')
+  @UsePipes(new ValidationPipe())
+  @UseGuards(AuthGuard)
+  async updateRecipe(
+    @Req() req,
+    @Param() param: getSingleRecipeDto,
+    @Body('recipe') updateRecipeDto: UpdateRecipeDto,
+  ): Promise<RecipeEntity> {
+    return this.recipeService.updateRecipe(
+      req.user as UserEntity,
+      param.id,
+      updateRecipeDto as UpdateRecipeDto,
+    );
+  }
 }

@@ -6,18 +6,19 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class CreateRecipeDto {
-  @IsNotEmpty()
+export class UpdateRecipeDto {
+  @IsOptional()
   @IsString()
   @MaxLength(80)
   readonly name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly category: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
+  @MaxLength(255)
   readonly description: string;
 
   @IsOptional()
@@ -28,14 +29,16 @@ export class CreateRecipeDto {
   @IsString()
   readonly video?: string;
 
-  @IsNotEmpty()
-  readonly time: number;
+  @IsOptional()
+  readonly time?: number;
 
+  @IsOptional()
   @IsArray()
   @IsNotEmpty()
-  readonly ingredients: string[];
+  readonly ingredients?: string[];
 
+  @IsOptional()
   @IsArray()
   @IsNotEmpty()
-  readonly steps: string[];
+  readonly steps?: string[];
 }

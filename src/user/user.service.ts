@@ -132,7 +132,10 @@ export class UserService {
       console.log(resetToken);
     }
 
-    return {message: 'A password reset link has been sent to your email address if it exists in our system.'};
+    return {
+      message:
+        'A password reset link has been sent to your email address if it exists in our system.',
+    };
   }
 
   findById(id: string): Promise<any> {

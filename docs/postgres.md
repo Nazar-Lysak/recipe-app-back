@@ -31,6 +31,11 @@ INSERT INTO categories(category) VALUES('Lunch');
 docker exec recipe_app_postgres pg_dump -U nestuser recipe_app_db > backup.sql
 ```
 
+## Cpean up DB before restoring 
+```sql
+docker exec -it recipe_app_postgres psql -U nestuser -d recipe_app_db -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+```
+
 ## Restore backup
 ```sql
 docker exec -i recipe_app_postgres psql -U nestuser -d recipe_app_db < backup.sql

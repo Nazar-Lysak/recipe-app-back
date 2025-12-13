@@ -1,8 +1,6 @@
-import { IsUUID } from "class-validator";
-
+import { IsUUID } from 'class-validator';
 
 export class getSingleRecipeDto {
-
-    @IsUUID()
-    readonly id: string;
+  @IsUUID()
+  readonly id: string;
 }
