@@ -20,12 +20,15 @@ import { AuthGuard } from '@/user/guards/auth.guard';
 import { getSingleRecipeDto } from './dto/getSingleRecipe.dto';
 import { DeleteResult } from 'typeorm';
 import { UpdateRecipeDto } from './dto/updateRecipe.dto';
+import { ApiTags, ApiBody } from '@nestjs/swagger';
 
+@ApiTags('Recipes')
 @Controller('recipe')
 export class RecipeController {
   constructor(private readonly recipeService: RecipeService) {}
 
   @Post()
+  @ApiBody({ type: CreateRecipeDto })
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
   createRecipe(
@@ -62,6 +65,7 @@ export class RecipeController {
   }
 
   @Put(':id')
+  @ApiBody({ type: UpdateRecipeDto })
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
   async updateRecipe(

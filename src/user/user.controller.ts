@@ -16,7 +16,9 @@ import type { AuthRequest } from '@/types/expressRequest.interface';
 import { AuthGuard } from './guards/auth.guard';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
