@@ -1,5 +1,4 @@
 import {
-  HttpCode,
   HttpException,
   HttpStatus,
   Injectable,
@@ -30,6 +29,7 @@ export class RecipeService {
     if(!categoryId) {
       throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
     }
+  
 
     const recipe = new RecipeEntity();
     Object.assign(recipe, createRecipeDto);
@@ -47,10 +47,11 @@ export class RecipeService {
   async getRecipes(query) {
     const queryBuilder = this.recipeRepository
         .createQueryBuilder('recipe')
-        .leftJoinAndSelect('recipe.author', 'author');
+        .leftJoinAndSelect('recipe.author', 'author')
+        .leftJoinAndSelect('recipe.category', 'category');
 
     if(query.category) {
-        queryBuilder.andWhere('recipe.category LIKE :category', { category: `%${query.category}%` });
+        queryBuilder.andWhere('category.id = :category', { category: query.category });
     }
 
     if(query.author) {
@@ -69,6 +70,12 @@ export class RecipeService {
 
     const recipesList = await queryBuilder.getMany();
     const recipesCount = await queryBuilder.getCount();
+
+    // recipesList.forEach(recipe => {
+    //   if (recipe.author) {
+    //     delete recipe.author.password;
+    //   }
+    // });
 
     return {recipesList, recipesCount};
   }
