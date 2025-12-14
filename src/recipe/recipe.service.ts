@@ -10,6 +10,7 @@ import { UserEntity } from '@/user/entity/user.entity';
 import { CreateRecipeDto } from './dto/createRecipe.dto';
 import { UpdateRecipeDto } from './dto/updateRecipe.dto';
 import { CategoryEntity } from '@/category/entity/category.entity';
+import { CloudinaryService } from '@/cloudinary/cloudinary.service';
 
 @Injectable()
 export class RecipeService {
@@ -18,6 +19,7 @@ export class RecipeService {
     private readonly recipeRepository: Repository<RecipeEntity>,
     @InjectRepository(CategoryEntity)
     private readonly categoryRepository: Repository<CategoryEntity>,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async createRecipe(
@@ -124,6 +126,11 @@ export class RecipeService {
     }
 
     Object.assign(recipe, updateRecipeDto);
+
+    if (updateRecipeDto.image && typeof updateRecipeDto.image === 'string') {
+      const uploadResult = await this.cloudinaryService.uploadBase64('recipes', updateRecipeDto.image);
+      recipe.image = uploadResult.secure_url;
+    }
 
     return this.recipeRepository.save(recipe);
   }

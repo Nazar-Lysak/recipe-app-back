@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Matches,
   MaxLength,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
@@ -25,9 +26,11 @@ export class UpdateRecipeDto {
   @MaxLength(255)
   readonly description: string;
 
-  @ApiProperty({ description: 'The image URL of the recipe', required: false })
+  @ApiProperty({ description: 'Base64 encoded image', required: false })
   @IsOptional()
-  @IsString()
+  @Matches(/^data:image\/(png|jpg|jpeg|gif|webp);base64,/, {
+    message: 'Invalid image format'
+  })
   readonly image?: string;
 
   @ApiProperty({ description: 'The video URL of the recipe', required: false })

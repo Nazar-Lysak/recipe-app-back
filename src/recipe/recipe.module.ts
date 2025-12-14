@@ -4,9 +4,13 @@ import { RecipeController } from './recipe.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RecipeEntity } from './entity/recipe.entity';
 import { CategoryEntity } from '@/category/entity/category.entity';
+import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RecipeEntity, CategoryEntity])],
+  imports: [
+    TypeOrmModule.forFeature([RecipeEntity, CategoryEntity]),
+    CloudinaryModule,
+  ],
   providers: [RecipeService],
   controllers: [RecipeController],
 })

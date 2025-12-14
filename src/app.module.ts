@@ -6,6 +6,7 @@ import { CategoryModule } from './category/category.module';
 import { RecipeModule } from './recipe/recipe.module';
 import dbConfigProd from './config/db.config.prod';
 import dbConfigDev from '@/config/db.config.dev';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import dbConfigDev from '@/config/db.config.dev';
     UserModule,
     CategoryModule,
     RecipeModule,
+    CloudinaryModule,
   ],
 })
 export class AppModule {}

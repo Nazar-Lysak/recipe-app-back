@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict L2XumNcnQBObcJPlk0JV7KP8ZYeXcvorzCryXmpFfgSi7rjTpQfREaY9jsd5C67
+\restrict KUYXabqD7VgZYdVkJbLwLcNKDHW8jxgiYIHHRcRYGchoiBAXAJ8lkBoHMpZWZcg
 
 -- Dumped from database version 16.11 (Debian 16.11-1.pgdg13+1)
 -- Dumped by pg_dump version 16.11 (Debian 16.11-1.pgdg13+1)
@@ -141,20 +141,21 @@ ALTER TABLE public.users OWNER TO nestuser;
 --
 
 COPY public.categories (id, name, image) FROM stdin;
-d9b0b1f3-f3f4-490b-aaab-3c42eeaecd20	Сніданки	
-857acab9-1dae-4a3f-be1c-ad8de84d20e9	Обіди	
-5400ad8c-2702-4693-87d8-b25ef1dede3a	Вечері	
-1e5ced6c-45eb-4d09-991e-f1d8fb23e3f3	Перекуси	
-d338de3a-c502-42ca-9d99-d9cbb948d4b0	Перші страви	
-6e7ef643-f1ac-4ea0-80c1-fffc88b534b4	Основні страви	
-d3c601fe-da84-445e-a77d-090a24006909	Закуски	
-97006906-2b2a-4903-9a5f-671d90b452d8	Гарніри	
-f4f9ea71-a649-4f75-bfab-ba99922edb92	Салати	
-861aa6a2-7a4c-4ea0-a876-1c7571e92ab1	Десерти	
-431fd6d6-82b0-4c0d-a5cd-b2d76d06e501	Випічка	
-ca4496d1-02ba-4851-9b88-7f21ea0b0692	Напої	
-4fb74c45-963a-4442-9fe8-2fad1400067d	Святкові страви	
-193d83ca-25dd-45a6-8c19-3ec2ea042e3b	Для дітей	
+d338de3a-c502-42ca-9d99-d9cbb948d4b0	Перші страви	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745634/11-soups_ysuwmw.png
+4fb74c45-963a-4442-9fe8-2fad1400067d	Святкові страви	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745633/8-%D1%81%D0%B2%D1%8F%D1%82%D0%BA%D0%BE%D0%B2%D1%96-%D1%81%D1%82%D1%80%D0%B0%D0%B2%D0%B8_t4ayjs.png
+97006906-2b2a-4903-9a5f-671d90b452d8	Гарніри	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745632/12-garnir_cc6jea.png
+4f8a1d6e-2b8c-4c4f-9c91-6e2f9a7c1b42	Веган	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745631/13-vegan_hjxuhv.png
+6e7ef643-f1ac-4ea0-80c1-fffc88b534b4	Основні страви	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745629/10-main_o4kqgw.png
+f4f9ea71-a649-4f75-bfab-ba99922edb92	Салати	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745628/7-%D1%81%D0%B0%D0%BB%D0%B0%D1%82_dwpyo9.png
+431fd6d6-82b0-4c0d-a5cd-b2d76d06e501	Випічка	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745627/6-%D0%B2%D0%B8%D0%BF%D1%96%D1%87%D0%BA%D0%B0_dqpvfz.png
+861aa6a2-7a4c-4ea0-a876-1c7571e92ab1	Десерти	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745625/4-%D0%B4%D0%B5%D1%81%D0%B5%D1%80%D1%82%D0%B8_iyuaoy.png
+193d83ca-25dd-45a6-8c19-3ec2ea042e3b	Для дітей	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745624/3-%D0%B4%D0%BB%D1%8F-%D0%B4%D1%96%D1%82%D0%B5%D0%B8%CC%86_hz2xrc.png
+d9b0b1f3-f3f4-490b-aaab-3c42eeaecd20	Сніданки	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745624/1-%D1%81%D0%BD%D1%96%D0%B4%D0%B0%D0%BD%D0%BE%D0%BA_meubys.png
+d3c601fe-da84-445e-a77d-090a24006909	Закуски	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765745623/2-%D0%B7%D0%B0%D0%BA%D1%83%D1%81%D0%BA%D0%B8_t5vt1g.png
+1e5ced6c-45eb-4d09-991e-f1d8fb23e3f3	Перекуси	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765747672/%D0%B7%D0%B0%D0%BA%D1%83%D1%81%D0%BA%D0%B8_fwa7vz.png
+ca4496d1-02ba-4851-9b88-7f21ea0b0692	Напої	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765747670/%D0%BD%D0%B0%D0%BF%D0%BE%D1%96%CC%88_k6qku8.png
+5400ad8c-2702-4693-87d8-b25ef1dede3a	Вечері	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765747670/%D0%B2%D0%B5%D1%87%D0%B5%D1%80%D1%8F_alqwhi.png
+857acab9-1dae-4a3f-be1c-ad8de84d20e9	Обіди	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765747669/%D0%BE%D0%B1%D1%96%D0%B4%D0%B8_p7hppm.png
 \.
 
 
@@ -218,7 +219,7 @@ d029cefe-333e-45fa-9d2c-c5bab778d52d	Оселедець під шубою	Кла
 38add7c0-c10f-43c8-bd5f-b7b2d745f2b6	Фруктові смузі для дітей	Корисний та смачний фруктовий смузі для малюків.	5			0	0	{Банан,Яблуко,Морква,Йогурт,"Мед (за бажанням)"}	{"Наріжте фрукти та моркву маленькими шматочками.","Додайте йогурт та мед.","Зблендеруйте до однорідної маси.","Подавайте охолодженим."}	9c609877-b2d1-4b90-a21e-44412565a444	2025-12-14 10:02:33.639977	2025-12-14 10:02:33.639977	193d83ca-25dd-45a6-8c19-3ec2ea042e3b
 e6466dbd-e08f-4df6-a742-ab631acfbfc8	Міні-піци з овочами	Невеликі піци, які легко їсти дітям.	20			0	0	{"Тісто для піци","Томатний соус",Сир,Перець,Помідори,Кукурудза}	{"Розкачайте тісто та виріжте маленькі кружечки.","Намажте соусом та додайте овочі і сир.","Випікайте 12–15 хвилин при 180°C.","Подавайте теплими."}	9c609877-b2d1-4b90-a21e-44412565a444	2025-12-14 10:02:39.929558	2025-12-14 10:02:39.929558	193d83ca-25dd-45a6-8c19-3ec2ea042e3b
 90cfcc5f-5f89-4b05-b247-3fe5d5fd3bdc	Кольорові овочеві ролли	Яскраві та здорові овочеві ролли для дітей.	10			0	0	{Лаваш,Морква,Огірок,Перець,"Сир вершковий",Зелень}	{"Намажте лаваш вершковим сиром.","Наріжте овочі соломкою і викладіть на лаваш.","Скрутіть рулетом і наріжте порційними шматочками.","Подавайте свіжими."}	9c609877-b2d1-4b90-a21e-44412565a444	2025-12-14 10:02:44.502403	2025-12-14 10:02:44.502403	193d83ca-25dd-45a6-8c19-3ec2ea042e3b
-6a54452f-87c6-47ed-b199-254ec9515ae0	Бананові млинці	Ніжні млинці з бананом для сніданку дітей.	15			0	0	{Банан,Яйця,Борошно,Молоко,Цукор,Ваніль}	{"Розімніть банан виделкою.","Додайте яйця, молоко, борошно, цукор та ваніль.","Змішайте до однорідної маси.","Смажте млинці на сковороді з обох боків до золотистого кольору."}	9c609877-b2d1-4b90-a21e-44412565a444	2025-12-14 10:02:50.88917	2025-12-14 10:02:50.88917	193d83ca-25dd-45a6-8c19-3ec2ea042e3b
+6a54452f-87c6-47ed-b199-254ec9515ae0	Бананові млинці	Ніжні млинці з бананом для сніданку дітей.	15	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765740101/recipes/uhfbzxvtfa7gzu93yvgn.webp		0	0	{Банан,Яйця,Борошно,Молоко,Цукор,Ваніль}	{"Розімніть банан виделкою.","Додайте яйця, молоко, борошно, цукор та ваніль.","Змішайте до однорідної маси.","Смажте млинці на сковороді з обох боків до золотистого кольору."}	9c609877-b2d1-4b90-a21e-44412565a444	2025-12-14 10:02:50.88917	2025-12-14 21:21:42.946	193d83ca-25dd-45a6-8c19-3ec2ea042e3b
 \.
 
 
@@ -365,5 +366,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict L2XumNcnQBObcJPlk0JV7KP8ZYeXcvorzCryXmpFfgSi7rjTpQfREaY9jsd5C67
+\unrestrict KUYXabqD7VgZYdVkJbLwLcNKDHW8jxgiYIHHRcRYGchoiBAXAJ8lkBoHMpZWZcg
 
