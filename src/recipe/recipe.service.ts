@@ -10,32 +10,37 @@ import { DeleteResult, Repository } from 'typeorm';
 import { UserEntity } from '@/user/entity/user.entity';
 import { CreateRecipeDto } from './dto/createRecipe.dto';
 import { UpdateRecipeDto } from './dto/updateRecipe.dto';
-import { count } from 'console';
+import { CategoryEntity } from '@/category/entity/category.entity';
 
 @Injectable()
 export class RecipeService {
   constructor(
     @InjectRepository(RecipeEntity)
     private readonly recipeRepository: Repository<RecipeEntity>,
+    @InjectRepository(CategoryEntity)
+    private readonly categoryRepository: Repository<CategoryEntity>,
   ) {}
 
-  createRecipe(
+  async createRecipe(
     user: UserEntity,
     createRecipeDto: CreateRecipeDto,
-  ): Promise<RecipeEntity> {
+  ):Promise<RecipeEntity> {
+
+    const categoryId = await this.categoryRepository.findOneBy({ id: createRecipeDto.category });
+    if(!categoryId) {
+      throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
+    }
+
     const recipe = new RecipeEntity();
     Object.assign(recipe, createRecipeDto);
-
     if (!recipe.image) {
       recipe.image = '';
     }
-
     if (!recipe.video) {
       recipe.video = '';
     }
 
     recipe.authorId = user.id;
-
     return this.recipeRepository.save(recipe);
   }
 

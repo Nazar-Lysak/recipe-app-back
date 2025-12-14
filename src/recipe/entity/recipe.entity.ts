@@ -1,8 +1,10 @@
+import { CategoryEntity } from '@/category/entity/category.entity';
 import { UserEntity } from '@/user/entity/user.entity';
 import {
   BeforeUpdate,
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -14,9 +16,6 @@ export class RecipeEntity {
 
   @Column({ type: 'text' })
   name: string;
-
-  @Column({ default: '' })
-  category: string;
 
   @Column({ default: '' })
   description: string;
@@ -53,6 +52,10 @@ export class RecipeEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.recipes)
   author: UserEntity;
+
+  @ManyToOne(() => CategoryEntity)
+  @JoinColumn({ name: 'categoryId' })
+  category: CategoryEntity;
 
   @BeforeUpdate()
   updateTimestamp() {

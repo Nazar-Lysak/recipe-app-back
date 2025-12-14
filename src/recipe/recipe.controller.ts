@@ -31,7 +31,7 @@ export class RecipeController {
   @ApiBody({ type: CreateRecipeDto })
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
-  createRecipe(
+  async createRecipe(
     @Req() req,
     @Body('recipe') createRecipeDto: CreateRecipeDto,
   ): Promise<RecipeEntity> {

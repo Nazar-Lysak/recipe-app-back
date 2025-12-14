@@ -2,8 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
   IsNotEmpty,
+  IsObject,
   IsOptional,
   IsString,
+  IsUUID,
   MaxLength,
 } from 'class-validator';
 
@@ -17,6 +19,7 @@ export class CreateRecipeDto {
   @ApiProperty({description: 'The category of the recipe'})
   @IsNotEmpty()
   @IsString()
+  @IsUUID()
   readonly category: string;
 
   @ApiProperty({description: 'The description of the recipe'})
