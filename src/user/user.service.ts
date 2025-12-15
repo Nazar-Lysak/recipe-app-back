@@ -10,6 +10,7 @@ import { loginUserDto } from './dto/loginUser.dto';
 import { UserProfile } from './entity/user-profile.entity';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { nanoid } from 'nanoid';
+import { AvatarGeneratorService } from '@/avatar-generator/avatar-generator.service';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,7 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
     @InjectRepository(UserProfile)
     private userProfileRepository: Repository<UserProfile>,
+    private readonly avatarGeneratorService: AvatarGeneratorService,
   ) {}
 
   async getAllUsers() {
@@ -121,14 +123,15 @@ export class UserService {
     Object.assign(newUser, createUserDto);
 
     const savedUser = await this.userRepository.save(newUser);
+    const randomAvatar = this.avatarGeneratorService.generateAvatarUrl();
 
     // Create user profile
     const newProfile = new UserProfile();
     newProfile.user = savedUser;
+    newProfile.avatar_url = randomAvatar;
     await this.userProfileRepository.save(newProfile);
 
     delete savedUser.password;
-
     return this.generateUserResponse(savedUser);
   }
 

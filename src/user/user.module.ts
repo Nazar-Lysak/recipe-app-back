@@ -10,9 +10,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
 import { UserProfile } from './entity/user-profile.entity';
 import { AuthMiddleware } from './middlewares/auth.middleware';
+import { AvatarGeneratorModule } from '@/avatar-generator/avatar-generator.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, UserProfile])],
+  imports: [TypeOrmModule.forFeature([UserEntity, UserProfile]), AvatarGeneratorModule],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],
