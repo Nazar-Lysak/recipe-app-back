@@ -50,6 +50,7 @@ export class RecipeService {
     const queryBuilder = this.recipeRepository
         .createQueryBuilder('recipe')
         .leftJoinAndSelect('recipe.author', 'author')
+        .leftJoinAndSelect('author.profile', 'profile')
         .leftJoinAndSelect('recipe.category', 'category');
 
     if(query.category) {
