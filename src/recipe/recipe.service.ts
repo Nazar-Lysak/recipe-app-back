@@ -68,16 +68,22 @@ export class RecipeService {
         queryBuilder.offset(parseInt(query.offset));
     }
 
-    queryBuilder.orderBy('recipe.createdAt', 'DESC');
+    if(query.oldest === 'true') {
+        queryBuilder.orderBy('recipe.createdAt', 'ASC');
+    } 
+    
+    if(query.newest) {
+        queryBuilder.orderBy('recipe.createdAt', 'DESC');
+    }
 
     const recipesList = await queryBuilder.getMany();
     const recipesCount = await queryBuilder.getCount();
 
-    // recipesList.forEach(recipe => {
-    //   if (recipe.author) {
-    //     delete recipe.author.password;
-    //   }
-    // });
+    recipesList.forEach(recipe => {
+      if (recipe.author) {
+        delete recipe.author.password;
+      }
+    });
 
     return {recipesList, recipesCount};
   }
