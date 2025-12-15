@@ -25,7 +25,7 @@ export class UserService {
   async getAllUsers() {
     const users = await this.userRepository.find();
     const createResult = users.map((user) => {
-      const { id, password, ...result } = user;
+      const { password, ...result } = user;
       return result;
     });
     return { users: createResult };
@@ -70,6 +70,8 @@ export class UserService {
     delete userProfile?.language;
 
     Object.assign(user, userProfile);
+
+    console.log(user);
 
 
 

@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Put,
   Req,
@@ -38,8 +39,8 @@ export class UserController {
 
   @Get(":id")
   @UsePipes(new ValidationPipe())
-  getUserById(@Req() userId: GetUserByIdDto):Promise<any> {
-    return this.userService.getUserById(userId.id);
+  getUserById(@Param() params: GetUserByIdDto): Promise<any> {
+    return this.userService.getUserById(params.id);
   }
 
   @UsePipes(new ValidationPipe())
