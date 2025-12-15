@@ -19,7 +19,6 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { GetUserByIdDto } from './dto/getUserById.dto';
-import { get } from 'http';
 
 @ApiTags('Users')
 @Controller('user')

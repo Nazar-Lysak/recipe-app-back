@@ -77,6 +77,10 @@ export class RecipeService {
       queryBuilder.orderBy('recipe.createdAt', 'DESC');
     }
 
+    if(!query.newest && !query.oldest) {
+      queryBuilder.orderBy('recipe.createdAt', 'DESC');
+    }
+
     const recipesList = await queryBuilder.getMany();
     const recipesCount = await queryBuilder.getCount();
 

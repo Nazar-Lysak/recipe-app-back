@@ -71,8 +71,6 @@ export class UserService {
 
     Object.assign(user, userProfile);
 
-    console.log(user);
-
     return user;
   }
 
