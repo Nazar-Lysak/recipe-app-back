@@ -12,33 +12,37 @@ export class CloudinaryService {
     cloudinary.config(cloudinaryConfig());
   }
 
-  async uploadImage(path: string, file: Express.Multer.File): Promise<UploadApiResponse> {
+  async uploadImage(
+    path: string,
+    file: Express.Multer.File,
+  ): Promise<UploadApiResponse> {
     return new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        { 
-          folder: path, 
-          resource_type: 'image',
-          format: 'webp',
-          transformation: [
-            { quality: 'auto:good' }
-          ]
-        },
-        (error: UploadApiErrorResponse, result: UploadApiResponse) => {
-          if (error) return reject(error);
-          resolve(result);
-        }
-      ).end(file.buffer);
+      cloudinary.uploader
+        .upload_stream(
+          {
+            folder: path,
+            resource_type: 'image',
+            format: 'webp',
+            transformation: [{ quality: 'auto:good' }],
+          },
+          (error: UploadApiErrorResponse, result: UploadApiResponse) => {
+            if (error) return reject(error);
+            resolve(result);
+          },
+        )
+        .end(file.buffer);
     });
   }
 
-  async uploadBase64(path: string, base64String: string): Promise<UploadApiResponse> {
+  async uploadBase64(
+    path: string,
+    base64String: string,
+  ): Promise<UploadApiResponse> {
     return cloudinary.uploader.upload(base64String, {
       folder: path,
       resource_type: 'image',
       format: 'webp',
-      transformation: [
-        { quality: 'auto:good' }
-      ]
+      transformation: [{ quality: 'auto:good' }],
     });
   }
 

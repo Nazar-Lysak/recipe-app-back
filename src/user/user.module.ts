@@ -13,7 +13,10 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
 import { AvatarGeneratorModule } from '@/avatar-generator/avatar-generator.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, UserProfile]), AvatarGeneratorModule],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity, UserProfile]),
+    AvatarGeneratorModule,
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

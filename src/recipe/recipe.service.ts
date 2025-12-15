@@ -1,8 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeEntity } from './entity/recipe.entity';
 import { DeleteResult, Repository } from 'typeorm';
@@ -25,13 +21,13 @@ export class RecipeService {
   async createRecipe(
     user: UserEntity,
     createRecipeDto: CreateRecipeDto,
-  ):Promise<RecipeEntity> {
-
-    const categoryId = await this.categoryRepository.findOneBy({ id: createRecipeDto.category });
-    if(!categoryId) {
+  ): Promise<RecipeEntity> {
+    const categoryId = await this.categoryRepository.findOneBy({
+      id: createRecipeDto.category,
+    });
+    if (!categoryId) {
       throw new HttpException('Category not found', HttpStatus.NOT_FOUND);
     }
-  
 
     const recipe = new RecipeEntity();
     Object.assign(recipe, createRecipeDto);
@@ -48,45 +44,49 @@ export class RecipeService {
 
   async getRecipes(query) {
     const queryBuilder = this.recipeRepository
-        .createQueryBuilder('recipe')
-        .leftJoinAndSelect('recipe.author', 'author')
-        .leftJoinAndSelect('author.profile', 'profile')
-        .leftJoinAndSelect('recipe.category', 'category');
+      .createQueryBuilder('recipe')
+      .leftJoinAndSelect('recipe.author', 'author')
+      .leftJoinAndSelect('author.profile', 'profile')
+      .leftJoinAndSelect('recipe.category', 'category');
 
-    if(query.category) {
-        queryBuilder.andWhere('category.id = :category', { category: query.category });
+    if (query.category) {
+      queryBuilder.andWhere('category.id = :category', {
+        category: query.category,
+      });
     }
 
-    if(query.author) {
-        queryBuilder.andWhere('author.username = :author', { author: query.author });
+    if (query.author) {
+      queryBuilder.andWhere('author.username = :author', {
+        author: query.author,
+      });
     }
 
-    if(query.limit) {
-        queryBuilder.limit(parseInt(query.limit));
+    if (query.limit) {
+      queryBuilder.limit(parseInt(query.limit));
     }
 
-    if(query.offset) {
-        queryBuilder.offset(parseInt(query.offset));
+    if (query.offset) {
+      queryBuilder.offset(parseInt(query.offset));
     }
 
-    if(query.oldest === 'true') {
-        queryBuilder.orderBy('recipe.createdAt', 'ASC');
-    } 
-    
-    if(query.newest) {
-        queryBuilder.orderBy('recipe.createdAt', 'DESC');
+    if (query.oldest === 'true') {
+      queryBuilder.orderBy('recipe.createdAt', 'ASC');
+    }
+
+    if (query.newest) {
+      queryBuilder.orderBy('recipe.createdAt', 'DESC');
     }
 
     const recipesList = await queryBuilder.getMany();
     const recipesCount = await queryBuilder.getCount();
 
-    recipesList.forEach(recipe => {
+    recipesList.forEach((recipe) => {
       if (recipe.author) {
         delete recipe.author.password;
       }
     });
 
-    return {recipesList, recipesCount};
+    return { recipesList, recipesCount };
   }
 
   async getRecipeById(id: string): Promise<RecipeEntity> {
@@ -135,7 +135,10 @@ export class RecipeService {
     Object.assign(recipe, updateRecipeDto);
 
     if (updateRecipeDto.image && typeof updateRecipeDto.image === 'string') {
-      const uploadResult = await this.cloudinaryService.uploadBase64('recipes', updateRecipeDto.image);
+      const uploadResult = await this.cloudinaryService.uploadBase64(
+        'recipes',
+        updateRecipeDto.image,
+      );
       recipe.image = uploadResult.secure_url;
     }
 

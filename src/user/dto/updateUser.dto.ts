@@ -63,17 +63,27 @@ export class UpdateUserDto {
   @IsUrl()
   readonly youtube?: string;
 
-  @ApiProperty({ description: 'Privacy setting for user profile', required: false })
+  @ApiProperty({
+    description: 'Privacy setting for user profile',
+    required: false,
+  })
   @IsOptional()
   @IsBoolean()
   readonly is_private?: boolean;
 
-  @ApiProperty({ description: 'Preferred language of the user', required: false })
+  @ApiProperty({
+    description: 'Preferred language of the user',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   readonly language?: string;
 
-  @ApiProperty({ description: 'Theme preference (light or dark)', enum: ['light', 'dark'], required: false })
+  @ApiProperty({
+    description: 'Theme preference (light or dark)',
+    enum: ['light', 'dark'],
+    required: false,
+  })
   @IsOptional()
   @IsEnum(['light', 'dark'], {
     message: 'theme must be either "light" or "dark"',

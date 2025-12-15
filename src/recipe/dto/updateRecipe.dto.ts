@@ -20,7 +20,10 @@ export class UpdateRecipeDto {
   @IsString()
   readonly category: string;
 
-  @ApiProperty({ description: 'The description of the recipe', required: false })
+  @ApiProperty({
+    description: 'The description of the recipe',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   @MaxLength(255)
@@ -29,7 +32,7 @@ export class UpdateRecipeDto {
   @ApiProperty({ description: 'Base64 encoded image', required: false })
   @IsOptional()
   @Matches(/^data:image\/(png|jpg|jpeg|gif|webp);base64,/, {
-    message: 'Invalid image format'
+    message: 'Invalid image format',
   })
   readonly image?: string;
 
@@ -38,17 +41,26 @@ export class UpdateRecipeDto {
   @IsString()
   readonly video?: string;
 
-  @ApiProperty({ description: 'The time required to prepare the recipe in minutes', required: false })
+  @ApiProperty({
+    description: 'The time required to prepare the recipe in minutes',
+    required: false,
+  })
   @IsOptional()
   readonly time?: number;
 
-  @ApiProperty({ description: 'The list of ingredients for the recipe', required: false })
+  @ApiProperty({
+    description: 'The list of ingredients for the recipe',
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsNotEmpty()
   readonly ingredients?: string[];
 
-  @ApiProperty({ description: 'The list of steps to prepare the recipe', required: false })
+  @ApiProperty({
+    description: 'The list of steps to prepare the recipe',
+    required: false,
+  })
   @IsOptional()
   @IsArray()
   @IsNotEmpty()

@@ -37,7 +37,7 @@ export class UserController {
     return this.userService.getCurrentUser(request.user);
   }
 
-  @Get(":id")
+  @Get(':id')
   @UsePipes(new ValidationPipe())
   getUserById(@Param() params: GetUserByIdDto): Promise<any> {
     return this.userService.getUserById(params.id);

@@ -49,8 +49,8 @@ export class UserService {
   }
 
   async getUserById(id: string): Promise<any> {
-    const user = await this.userRepository.findOne({ 
-      where: { id }
+    const user = await this.userRepository.findOne({
+      where: { id },
     });
 
     if (!user) {
@@ -72,8 +72,6 @@ export class UserService {
     Object.assign(user, userProfile);
 
     console.log(user);
-
-
 
     return user;
   }
