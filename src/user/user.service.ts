@@ -11,8 +11,6 @@ import { UserProfile } from './entity/user-profile.entity';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { nanoid } from 'nanoid';
 
-const saltOrRounds = 10;
-
 @Injectable()
 export class UserService {
   constructor(
@@ -46,6 +44,34 @@ export class UserService {
     delete user.password;
 
     return { profile: { ...user, ...userProfile } };
+  }
+
+  async getUserById(id: string): Promise<any> {
+    const user = await this.userRepository.findOne({ 
+      where: { id }
+    });
+
+    if (!user) {
+      throw new HttpException(
+        `User with id ${id} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const userProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: user.id } },
+    });
+
+    delete user.password;
+    delete userProfile?.updated_at;
+    delete userProfile?.theme;
+    delete userProfile?.language;
+
+    Object.assign(user, userProfile);
+
+
+
+    return user;
   }
 
   async updateUser(user: any, updateUserDto: UpdateUserDto) {

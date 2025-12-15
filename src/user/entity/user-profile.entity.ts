@@ -12,10 +12,6 @@ export class UserProfile {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @OneToOne(() => UserEntity, (user) => user.profile)
-  @JoinColumn({ name: 'user_id' })
-  user: UserEntity;
-
   @Column({ nullable: true })
   first_name: string;
 
@@ -68,10 +64,10 @@ export class UserProfile {
   is_private: boolean;
 
   @Column({ default: 'en' })
-  language: string;
+  language?: string;
 
   @Column({ default: 'light' })
-  theme: string;
+  theme?: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
@@ -81,5 +77,9 @@ export class UserProfile {
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
   })
-  updated_at: Date;
+  updated_at?: Date;
+
+  @OneToOne(() => UserEntity, (user) => user.profile)
+  @JoinColumn({ name: 'user_id' })
+  user: UserEntity;
 }

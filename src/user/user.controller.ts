@@ -17,6 +17,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { GetUserByIdDto } from './dto/getUserById.dto';
+import { get } from 'http';
 
 @ApiTags('Users')
 @Controller('user')
@@ -32,6 +34,12 @@ export class UserController {
   @UseGuards(AuthGuard)
   getCurrentUser(@Req() request: AuthRequest) {
     return this.userService.getCurrentUser(request.user);
+  }
+
+  @Get(":id")
+  @UsePipes(new ValidationPipe())
+  getUserById(@Req() userId: GetUserByIdDto):Promise<any> {
+    return this.userService.getUserById(userId.id);
   }
 
   @UsePipes(new ValidationPipe())
