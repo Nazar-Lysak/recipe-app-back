@@ -66,7 +66,7 @@ export class RecipeController {
 
   @Put(':id')
   @ApiBody({ type: UpdateRecipeDto })
-  @UsePipes(new ValidationPipe())
+  // @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
   async updateRecipe(
     @Req() req,

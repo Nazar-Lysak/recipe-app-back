@@ -149,13 +149,13 @@ export class RecipeService {
 
     Object.assign(recipe, updateRecipeDto);
 
-    if (updateRecipeDto.image && typeof updateRecipeDto.image === 'string') {
-      const uploadResult = await this.cloudinaryService.uploadBase64(
-        'recipes',
-        updateRecipeDto.image,
-      );
-      recipe.image = uploadResult.secure_url;
-    }
+    // if (updateRecipeDto.image && typeof updateRecipeDto.image === 'string') {
+    //   const uploadResult = await this.cloudinaryService.uploadBase64(
+    //     'recipes',
+    //     updateRecipeDto.image,
+    //   );
+    //   recipe.image = uploadResult.secure_url;
+    // }
 
     return this.recipeRepository.save(recipe);
   }
