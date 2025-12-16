@@ -81,8 +81,19 @@ export class RecipeService {
       queryBuilder.orderBy('recipe.createdAt', 'DESC');
     }
 
-    const recipesList = await queryBuilder.getMany();
-    const recipesCount = await queryBuilder.getCount();
+    let recipesList = await queryBuilder.getMany();
+    
+    if(query.uniqueAuthors) {
+      const uniqueMap = new Map();
+      recipesList.forEach((recipe) => {
+        if (!uniqueMap.has(recipe.authorId)) {
+          uniqueMap.set(recipe.authorId, recipe);
+        }
+      });
+      recipesList = Array.from(uniqueMap.values());
+    }
+
+    const recipesCount = recipesList.length;
 
     recipesList.forEach((recipe) => {
       if (recipe.author) {
