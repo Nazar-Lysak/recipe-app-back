@@ -7,7 +7,7 @@ import { UserEntity } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import { env } from 'process';
 import { loginUserDto } from './dto/loginUser.dto';
-import { UserProfile } from './entity/user-profile.entity';
+import { UserProfileEntity } from './entity/user-profile.entity';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { nanoid } from 'nanoid';
 import { AvatarGeneratorService } from '@/avatar-generator/avatar-generator.service';
@@ -17,8 +17,8 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    @InjectRepository(UserProfile)
-    private userProfileRepository: Repository<UserProfile>,
+    @InjectRepository(UserProfileEntity)
+    private userProfileRepository: Repository<UserProfileEntity>,
     private readonly avatarGeneratorService: AvatarGeneratorService,
   ) {}
 
@@ -125,7 +125,7 @@ export class UserService {
     const randomAvatar = this.avatarGeneratorService.generateAvatarUrl();
 
     // Create user profile
-    const newProfile = new UserProfile();
+    const newProfile = new UserProfileEntity();
     newProfile.user = savedUser;
     newProfile.avatar_url = randomAvatar;
     await this.userProfileRepository.save(newProfile);

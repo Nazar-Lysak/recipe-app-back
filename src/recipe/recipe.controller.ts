@@ -67,7 +67,7 @@ export class RecipeController {
 
   @Put(':id')
   @ApiBody({ type: UpdateRecipeDto })
-  // @UsePipes(new ValidationPipe())
+  @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
   async updateRecipe(
     @Req() req,
@@ -79,5 +79,15 @@ export class RecipeController {
       param.id,
       updateRecipeDto as UpdateRecipeDto,
     );
+  }
+
+  @Post(':id/like')
+  @UsePipes(new ValidationPipe())
+  @UseGuards(AuthGuard)
+  async likeRecipe(
+    @Req() req,
+    @Param() param: getSingleRecipeDto,
+  ): Promise<RecipeEntity> {
+    return this.recipeService.likeRecipe(req.user as UserEntity, param.id);
   }
 }

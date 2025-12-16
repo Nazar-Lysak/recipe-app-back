@@ -8,7 +8,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserProfile } from './user-profile.entity';
+import { UserProfileEntity } from './user-profile.entity';
 import { RecipeEntity } from '@/recipe/entity/recipe.entity';
 
 @Entity('users')
@@ -25,8 +25,8 @@ export class UserEntity {
   @Column()
   password?: string;
 
-  @OneToOne(() => UserProfile, (profile) => profile.user)
-  profile: UserProfile;
+  @OneToOne(() => UserProfileEntity, (profile) => profile.user)
+  profile: UserProfileEntity;
 
   @OneToMany(() => RecipeEntity, (recipe) => recipe.author)
   recipes: RecipeEntity[];

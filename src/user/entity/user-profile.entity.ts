@@ -4,11 +4,14 @@ import {
   Column,
   OneToOne,
   JoinColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { RecipeEntity } from '@/recipe/entity/recipe.entity';
 
 @Entity('user_profiles')
-export class UserProfile {
+export class UserProfileEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -82,4 +85,8 @@ export class UserProfile {
   @OneToOne(() => UserEntity, (user) => user.profile)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
+
+  @ManyToMany(() => RecipeEntity)
+  @JoinTable()
+  liked_recipes: RecipeEntity[];
 }

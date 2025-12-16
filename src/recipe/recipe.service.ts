@@ -8,6 +8,7 @@ import { UpdateRecipeDto } from './dto/updateRecipe.dto';
 import { CategoryEntity } from '@/category/entity/category.entity';
 import { CloudinaryService } from '@/cloudinary/cloudinary.service';
 import { RecipesResponseInterface } from '@/types/recipesRespone.interfase';
+import { UserProfileEntity } from '@/user/entity/user-profile.entity';
 
 @Injectable()
 export class RecipeService {
@@ -16,6 +17,8 @@ export class RecipeService {
     private readonly recipeRepository: Repository<RecipeEntity>,
     @InjectRepository(CategoryEntity)
     private readonly categoryRepository: Repository<CategoryEntity>,
+    @InjectRepository(UserProfileEntity)
+    private readonly userProfileRepository: Repository<UserProfileEntity>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
@@ -62,6 +65,10 @@ export class RecipeService {
       });
     }
 
+    if(query.top) {
+      queryBuilder.orderBy('recipe.favouriteCount', 'DESC');
+    }
+
     if (query.limit) {
       queryBuilder.limit(parseInt(query.limit));
     }
@@ -70,7 +77,7 @@ export class RecipeService {
       queryBuilder.offset(parseInt(query.offset));
     }
 
-    if (query.oldest === 'true') {
+    if (query.oldest) {
       queryBuilder.orderBy('recipe.createdAt', 'ASC');
     }
 
@@ -150,14 +157,49 @@ export class RecipeService {
 
     Object.assign(recipe, updateRecipeDto);
 
-    // if (updateRecipeDto.image && typeof updateRecipeDto.image === 'string') {
-    //   const uploadResult = await this.cloudinaryService.uploadBase64(
-    //     'recipes',
-    //     updateRecipeDto.image,
-    //   );
-    //   recipe.image = uploadResult.secure_url;
-    // }
+    if (updateRecipeDto.image && typeof updateRecipeDto.image === 'string') {
+      const uploadResult = await this.cloudinaryService.uploadBase64(
+        'recipes',
+        updateRecipeDto.image,
+      );
+      recipe.image = uploadResult.secure_url;
+    }
 
+    return this.recipeRepository.save(recipe);
+  }
+
+  async likeRecipe(user: UserEntity, id: string) {
+    const recipe = await this.getRecipeById(id);
+
+    if (recipe.authorId === user.id) {
+      throw new HttpException(
+        'You cannot favorite your own recipe',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const userProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: user.id } },
+      relations: ['liked_recipes'],
+    });
+
+
+    if (!userProfile) {
+      throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
+    }
+
+
+    if (userProfile.liked_recipes.find(r => r.id === recipe.id)) {
+      throw new HttpException(
+        'You have already liked this recipe',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    userProfile.liked_recipes.push(recipe);
+    recipe.favouriteCount++;
+
+    await this.userProfileRepository.save(userProfile);
     return this.recipeRepository.save(recipe);
   }
 }
