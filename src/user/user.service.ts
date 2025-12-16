@@ -45,7 +45,7 @@ export class UserService {
 
     delete user.password;
 
-    return { profile: { ...user, ...userProfile } };
+    return { ...user, ...userProfile };
   }
 
   async getUserById(id: string): Promise<any> {
@@ -75,6 +75,7 @@ export class UserService {
   }
 
   async updateUser(user: any, updateUserDto: UpdateUserDto) {
+
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
