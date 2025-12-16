@@ -7,6 +7,7 @@ import { CreateRecipeDto } from './dto/createRecipe.dto';
 import { UpdateRecipeDto } from './dto/updateRecipe.dto';
 import { CategoryEntity } from '@/category/entity/category.entity';
 import { CloudinaryService } from '@/cloudinary/cloudinary.service';
+import { RecipesResponseInterface } from '@/types/recipesRespone.interfase';
 
 @Injectable()
 export class RecipeService {
@@ -42,7 +43,7 @@ export class RecipeService {
     return this.recipeRepository.save(recipe);
   }
 
-  async getRecipes(query) {
+  async getRecipes(query): Promise<RecipesResponseInterface> {
     const queryBuilder = this.recipeRepository
       .createQueryBuilder('recipe')
       .leftJoinAndSelect('recipe.author', 'author')

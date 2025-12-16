@@ -21,6 +21,7 @@ import { getSingleRecipeDto } from './dto/getSingleRecipe.dto';
 import { DeleteResult } from 'typeorm';
 import { UpdateRecipeDto } from './dto/updateRecipe.dto';
 import { ApiTags, ApiBody } from '@nestjs/swagger';
+import { RecipesResponseInterface } from '@/types/recipesRespone.interfase';
 
 @ApiTags('Recipes')
 @Controller('recipe')
@@ -42,7 +43,7 @@ export class RecipeController {
   }
 
   @Get()
-  getRecipes(@Query() query): Promise<any> {
+  getRecipes(@Query() query): Promise<RecipesResponseInterface> {
     return this.recipeService.getRecipes(query);
   }
 
