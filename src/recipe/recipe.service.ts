@@ -41,7 +41,16 @@ export class RecipeService {
     if (!recipe.video) {
       recipe.video = '';
     }
+    const userProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: user.id } },
+    });
 
+    if (!userProfile) {
+      throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    userProfile.recipes_count++;
+    await this.userProfileRepository.save(userProfile);
     recipe.authorId = user.id;
     return this.recipeRepository.save(recipe);
   }
@@ -114,9 +123,11 @@ export class RecipeService {
 
   async getRecipeById(id: string): Promise<RecipeEntity> {
     const recipe = await this.recipeRepository.findOneBy({ id });
+    
     if (!recipe) {
       throw new HttpException('Recipe not found', HttpStatus.NOT_FOUND);
     }
+    
     return recipe;
   }
 
@@ -134,8 +145,18 @@ export class RecipeService {
       );
     }
 
+    const userProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: user.id } },
+    });
+
+    if (userProfile && userProfile.recipes_count > 0) {
+      userProfile.recipes_count--;
+      await this.userProfileRepository.save(userProfile);
+    } 
+
     return await this.recipeRepository.delete({ id: recipe.id });
   }
+  
 
   async updateRecipe(
     user: UserEntity,
@@ -195,11 +216,22 @@ export class RecipeService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    
 
-    userProfile.liked_recipes.push(recipe);
+    const authorProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: recipe.authorId } },
+    });
+
+    if (authorProfile) {
+      authorProfile.likes_received++;
+      await this.userProfileRepository.save(authorProfile);
+    }
+    
     recipe.favouriteCount++;
+    userProfile.liked_recipes.push(recipe);
 
     await this.userProfileRepository.save(userProfile);
     return this.recipeRepository.save(recipe);
   }
 }
+

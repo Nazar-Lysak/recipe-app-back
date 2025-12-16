@@ -29,8 +29,8 @@ export class RecipeEntity {
   @Column({ nullable: true })
   video: string;
 
-  @Column({ type: 'float', default: 0 })
-  rating: number;
+  // @Column({ type: 'float', default: 0 })
+  // rating: number;
 
   @Column({ default: 0 })
   favouriteCount: number;
