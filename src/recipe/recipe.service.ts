@@ -21,7 +21,7 @@ export class RecipeService {
     private readonly userProfileRepository: Repository<UserProfileEntity>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
-
+  
   async createRecipe(
     user: UserEntity,
     createRecipeDto: CreateRecipeDto,
@@ -118,24 +118,16 @@ export class RecipeService {
   }
 
   async getRecipeById(id: string): Promise<any> {
-    const recipe = await this.recipeRepository.findOneBy({ id });
+    const recipe = await this.recipeRepository.findOne({
+      where: { id },
+    });
 
     if (!recipe) {
       throw new HttpException('Recipe not found', HttpStatus.NOT_FOUND);
     }
 
-    const likedByProfiles = await this.userProfileRepository
-      .createQueryBuilder('profile')
-      .leftJoin('profile.user', 'user')
-      .where(':recipeId = ANY(profile.liked_recipes)', { recipeId: id })
-      .select('user.id')
-      .getRawMany();
-
-    const likedByUserIds = likedByProfiles.map(p => p.user_id);
-    
-    return { ...recipe, likedByUserIds };
+    return recipe;
   }
-    
 
   async deleteRecipe(user: UserEntity, id: string): Promise<DeleteResult> {
     const recipe = await this.getRecipeById(id);
@@ -209,14 +201,14 @@ export class RecipeService {
     }
 
     const userProfile = await this.userProfileRepository.findOne({
-      where: { user: { id: user.id } }
+      where: { user: { id: user.id } },
     });
 
     if (!userProfile) {
       throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
     }
 
-    if (userProfile.liked_recipes.find(r => r === recipe.id)) {
+    if (userProfile.liked_recipes.includes(recipe.id)) {
       throw new HttpException(
         'You have already liked this recipe',
         HttpStatus.BAD_REQUEST,
@@ -226,18 +218,17 @@ export class RecipeService {
     const authorProfile = await this.userProfileRepository.findOne({
       where: { user: { id: recipe.authorId } },
     });
-    
+
     if (authorProfile) {
       authorProfile.likes_received++;
       await this.userProfileRepository.save(authorProfile);
     }
-  
 
     recipe.favouriteCount++;
+    recipe.likedByUserIds.push(user.id);
     userProfile.liked_recipes.push(recipe.id);
 
     await this.userProfileRepository.save(userProfile);
     return this.recipeRepository.save(recipe);
   }
 }
-
