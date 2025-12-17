@@ -74,8 +74,14 @@ export class RecipeService {
       });
     }
 
-    if(query.top) {
+    if (query.top) {
       queryBuilder.orderBy('recipe.favouriteCount', 'DESC');
+    } else if (query.oldest) {
+      queryBuilder.orderBy('recipe.createdAt', 'ASC');
+    } else if (query.newest) {
+      queryBuilder.orderBy('recipe.createdAt', 'DESC');
+    } else {
+      queryBuilder.orderBy('recipe.createdAt', 'DESC');
     }
 
     if (query.limit) {
@@ -86,21 +92,9 @@ export class RecipeService {
       queryBuilder.offset(parseInt(query.offset));
     }
 
-    if (query.oldest) {
-      queryBuilder.orderBy('recipe.createdAt', 'ASC');
-    }
-
-    if (query.newest) {
-      queryBuilder.orderBy('recipe.createdAt', 'DESC');
-    }
-
-    if(!query.newest && !query.oldest) {
-      queryBuilder.orderBy('recipe.createdAt', 'DESC');
-    }
-
     let recipesList = await queryBuilder.getMany();
-    
-    if(query.uniqueAuthors) {
+
+    if (query.uniqueAuthors) {
       const uniqueMap = new Map();
       recipesList.forEach((recipe) => {
         if (!uniqueMap.has(recipe.authorId)) {
@@ -121,14 +115,23 @@ export class RecipeService {
     return { recipesList, recipesCount };
   }
 
-  async getRecipeById(id: string): Promise<RecipeEntity> {
+  async getRecipeById(id: string): Promise<any> {
     const recipe = await this.recipeRepository.findOneBy({ id });
-    
+
     if (!recipe) {
       throw new HttpException('Recipe not found', HttpStatus.NOT_FOUND);
     }
-    
-    return recipe;
+
+    const likedByProfiles = await this.userProfileRepository
+      .createQueryBuilder('profile')
+      .leftJoin('profile.user', 'user')
+      .where(':recipeId = ANY(profile.liked_recipes)', { recipeId: id })
+      .select('user.id')
+      .getRawMany();
+
+    const likedByUserIds = likedByProfiles.map((p) => p.user_id);
+
+    return { ...recipe, likedByUserIds };
   }
 
   async deleteRecipe(user: UserEntity, id: string): Promise<DeleteResult> {
@@ -152,11 +155,10 @@ export class RecipeService {
     if (userProfile && userProfile.recipes_count > 0) {
       userProfile.recipes_count--;
       await this.userProfileRepository.save(userProfile);
-    } 
+    }
 
     return await this.recipeRepository.delete({ id: recipe.id });
   }
-  
 
   async updateRecipe(
     user: UserEntity,
@@ -190,7 +192,11 @@ export class RecipeService {
   }
 
   async likeRecipe(user: UserEntity, id: string) {
-    const recipe = await this.getRecipeById(id);
+    const recipe = await this.recipeRepository.findOneBy({ id });
+
+    if (!recipe) {
+      throw new HttpException('Recipe not found', HttpStatus.NOT_FOUND);
+    }
 
     if (recipe.authorId === user.id) {
       throw new HttpException(
@@ -201,22 +207,18 @@ export class RecipeService {
 
     const userProfile = await this.userProfileRepository.findOne({
       where: { user: { id: user.id } },
-      relations: ['liked_recipes'],
     });
-
 
     if (!userProfile) {
       throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
     }
 
-
-    if (userProfile.liked_recipes.find(r => r.id === recipe.id)) {
+    if (userProfile.liked_recipes.find((r) => r === recipe.id)) {
       throw new HttpException(
         'You have already liked this recipe',
         HttpStatus.BAD_REQUEST,
       );
     }
-    
 
     const authorProfile = await this.userProfileRepository.findOne({
       where: { user: { id: recipe.authorId } },
@@ -226,12 +228,11 @@ export class RecipeService {
       authorProfile.likes_received++;
       await this.userProfileRepository.save(authorProfile);
     }
-    
+
     recipe.favouriteCount++;
-    userProfile.liked_recipes.push(recipe);
+    userProfile.liked_recipes.push(recipe.id);
 
     await this.userProfileRepository.save(userProfile);
     return this.recipeRepository.save(recipe);
   }
 }
-

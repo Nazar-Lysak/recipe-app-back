@@ -86,7 +86,6 @@ export class UserProfileEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  @ManyToMany(() => RecipeEntity)
-  @JoinTable({name: 'user_liked_recipes'})
-  liked_recipes: RecipeEntity[];
+  @Column('text', { array: true, default: '{}' })
+  liked_recipes: string[];
 }

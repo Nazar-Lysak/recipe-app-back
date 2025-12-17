@@ -31,6 +31,28 @@ export class UserService {
     return { users: createResult };
   }
 
+  async getAllProfiles(query): Promise<any> {
+    const queryBuilder = await this.userProfileRepository
+      .createQueryBuilder('profile')
+      .leftJoinAndSelect('profile.user', 'user');
+
+    if (query.top) {
+      queryBuilder.orderBy('profile.likes_received', 'DESC');
+    }
+
+    if (query.limit) {
+      queryBuilder.limit(parseInt(query.limit));
+    }
+
+    if (query.offset) {
+      queryBuilder.offset(parseInt(query.offset));
+    }
+
+    let profilesList = await queryBuilder.getMany();
+
+    return { profiles: profilesList };
+  }
+
   async getCurrentUser(user: any) {
     if (!user) {
       throw new HttpException(
@@ -49,9 +71,7 @@ export class UserService {
   }
 
   async getUserById(id: string): Promise<any> {
-    const user = await this.userRepository.findOne({
-      where: { id },
-    });
+    const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
       throw new HttpException(
@@ -75,7 +95,6 @@ export class UserService {
   }
 
   async updateUser(user: any, updateUserDto: UpdateUserDto) {
-
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }

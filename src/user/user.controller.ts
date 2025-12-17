@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   UseGuards,
   UsePipes,
@@ -28,6 +29,11 @@ export class UserController {
   @Get()
   getAllUsers() {
     return this.userService.getAllUsers();
+  }
+
+  @Get('profile')
+  getAllProfiles(@Query() query?) {
+    return this.userService.getAllProfiles(query);
   }
 
   @Get('current')

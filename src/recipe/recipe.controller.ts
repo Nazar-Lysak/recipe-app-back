@@ -87,7 +87,7 @@ export class RecipeController {
   async likeRecipe(
     @Req() req,
     @Param() param: getSingleRecipeDto,
-  ): Promise<RecipeEntity> {
+  ): Promise<any> {
     return this.recipeService.likeRecipe(req.user as UserEntity, param.id);
   }
 }
