@@ -36,10 +36,16 @@ export class UserController {
     return this.userService.getAllProfiles(query);
   }
 
-  @Get('current')
+  @Get('profile/current')
   @UseGuards(AuthGuard)
   getCurrentUser(@Req() request: AuthRequest) {
     return this.userService.getCurrentUser(request.user);
+  }
+
+  @Get('/current')
+  @UseGuards(AuthGuard)
+  getCurrentUserData(@Req() request: AuthRequest) {
+    return this.userService.getCurrentUserData(request.user);
   }
 
   @Get(':id')

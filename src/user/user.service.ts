@@ -70,6 +70,28 @@ export class UserService {
     return { ...user, ...userProfile };
   }
 
+  async getCurrentUserData(user: any) {
+
+    if (!user) {
+      throw new HttpException(
+        'No authenticated user found',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const userData = await this.userRepository.findOne({
+      where: { id: user.id },
+    });
+
+    if (!userData) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    delete userData.password;
+
+    return userData;
+  }
+
   async getUserById(id: string): Promise<any> {
     const user = await this.userRepository.findOne({ where: { id } });
 
