@@ -21,7 +21,7 @@ export class RecipeService {
     private readonly userProfileRepository: Repository<UserProfileEntity>,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
-  
+
   async createRecipe(
     user: UserEntity,
     createRecipeDto: CreateRecipeDto,
@@ -74,7 +74,7 @@ export class RecipeService {
       });
     }
 
-    if(query.top) {
+    if (query.top) {
       queryBuilder.orderBy('recipe.favouriteCount', 'DESC');
     } else if (query.oldest) {
       queryBuilder.orderBy('recipe.createdAt', 'ASC');
@@ -93,8 +93,8 @@ export class RecipeService {
     }
 
     let recipesList = await queryBuilder.getMany();
-    
-    if(query.uniqueAuthors) {
+
+    if (query.uniqueAuthors) {
       const uniqueMap = new Map();
       recipesList.forEach((recipe) => {
         if (!uniqueMap.has(recipe.authorId)) {
@@ -103,8 +103,6 @@ export class RecipeService {
       });
       recipesList = Array.from(uniqueMap.values());
     }
-
-
 
     const recipesCount = recipesList.length;
 
@@ -150,7 +148,7 @@ export class RecipeService {
     if (userProfile && userProfile.recipes_count > 0) {
       userProfile.recipes_count--;
       await this.userProfileRepository.save(userProfile);
-    } 
+    }
 
     return await this.recipeRepository.delete({ id: recipe.id });
   }
@@ -227,6 +225,56 @@ export class RecipeService {
     recipe.favouriteCount++;
     recipe.likedByUserIds.push(user.id);
     userProfile.liked_recipes.push(recipe.id);
+
+    await this.userProfileRepository.save(userProfile);
+    return this.recipeRepository.save(recipe);
+  }
+
+  async unlikeRecipe(user: UserEntity, id: string) {
+    const recipe = await this.recipeRepository.findOneBy({ id });
+
+    if (!recipe) {
+      throw new HttpException('Recipe not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (recipe.authorId === user.id) {
+      throw new HttpException(
+        'You cannot favorite your own recipe',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const userProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: user.id } },
+    });
+
+    if (!userProfile) {
+      throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (!userProfile.liked_recipes.includes(recipe.id)) {
+      throw new HttpException(
+        'You have not liked this recipe',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const authorProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: recipe.authorId } },
+    });
+
+    if (authorProfile && authorProfile.likes_received > 0) {
+      authorProfile.likes_received--;
+      await this.userProfileRepository.save(authorProfile);
+    }
+
+    recipe.favouriteCount--;
+    recipe.likedByUserIds = recipe.likedByUserIds.filter(
+      (userId) => userId !== user.id,
+    );
+    userProfile.liked_recipes = userProfile.liked_recipes.filter(
+      (recipeId) => recipeId !== recipe.id,
+    );
 
     await this.userProfileRepository.save(userProfile);
     return this.recipeRepository.save(recipe);

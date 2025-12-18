@@ -71,7 +71,6 @@ export class UserService {
   }
 
   async getCurrentUserData(user: any) {
-
     if (!user) {
       throw new HttpException(
         'No authenticated user found',

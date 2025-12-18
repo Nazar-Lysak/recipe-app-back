@@ -90,4 +90,14 @@ export class RecipeController {
   ): Promise<any> {
     return this.recipeService.likeRecipe(req.user as UserEntity, param.id);
   }
+
+  @Post(':id/unlike')
+  @UsePipes(new ValidationPipe())
+  @UseGuards(AuthGuard)
+  async unlikeRecipe(
+    @Req() req,
+    @Param() param: getSingleRecipeDto,
+  ): Promise<any> {
+    return this.recipeService.unlikeRecipe(req.user as UserEntity, param.id);
+  }
 }
