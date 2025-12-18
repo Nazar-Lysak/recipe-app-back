@@ -15,7 +15,11 @@ import { FollowProfileEntity } from './entity/follow-profile.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, UserProfileEntity, FollowProfileEntity]),
+    TypeOrmModule.forFeature([
+      UserEntity,
+      UserProfileEntity,
+      FollowProfileEntity,
+    ]),
     AvatarGeneratorModule,
   ],
   controllers: [UserController],

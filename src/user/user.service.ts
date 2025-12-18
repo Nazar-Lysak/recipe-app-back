@@ -73,9 +73,8 @@ export class UserService {
     return { ...user, ...userProfile };
   }
 
-  async followUser(currentUser: any, id: string)  {
-
-    if(currentUser.id === id) {
+  async followUser(currentUser: any, id: string) {
+    if (currentUser.id === id) {
       throw new HttpException(
         'You cannot follow yourself',
         HttpStatus.BAD_REQUEST,
@@ -86,16 +85,22 @@ export class UserService {
       where: { user: { id: currentUser.id } },
     });
 
-    if(!followerProfile) {
-      throw new HttpException('Follower profile not found', HttpStatus.NOT_FOUND);
+    if (!followerProfile) {
+      throw new HttpException(
+        'Follower profile not found',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const followingProfile = await this.userProfileRepository.findOne({
       where: { user: { id } },
     });
 
-    if(!followingProfile) {
-      throw new HttpException('Following profile not found', HttpStatus.NOT_FOUND);
+    if (!followingProfile) {
+      throw new HttpException(
+        'Following profile not found',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const existingFollow = await this.followProfileRepository.findOne({
@@ -104,8 +109,8 @@ export class UserService {
         followingId: id,
       },
     });
-    
-    if(existingFollow) {
+
+    if (existingFollow) {
       throw new HttpException(
         'You are already following this user',
         HttpStatus.BAD_REQUEST,
@@ -133,16 +138,22 @@ export class UserService {
       where: { user: { id: currentUser.id } },
     });
 
-    if(!followerProfile) {
-      throw new HttpException('Follower profile not found', HttpStatus.NOT_FOUND);
+    if (!followerProfile) {
+      throw new HttpException(
+        'Follower profile not found',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const followingProfile = await this.userProfileRepository.findOne({
       where: { user: { id } },
     });
 
-    if(!followingProfile) {
-      throw new HttpException('Following profile not found', HttpStatus.NOT_FOUND);
+    if (!followingProfile) {
+      throw new HttpException(
+        'Following profile not found',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
     const existingFollow = await this.followProfileRepository.findOne({
@@ -151,8 +162,8 @@ export class UserService {
         followingId: id,
       },
     });
-    
-    if(!existingFollow) {
+
+    if (!existingFollow) {
       throw new HttpException(
         'You are not following this user',
         HttpStatus.BAD_REQUEST,
@@ -355,4 +366,3 @@ export class UserService {
     };
   }
 }
-
