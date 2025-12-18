@@ -81,12 +81,12 @@ export class UpdateUserDto {
 
   @ApiProperty({
     description: 'Theme preference (light or dark)',
-    enum: ['light', 'dark'],
+    enum: ['light', 'dark', 'ocean'],
     required: false,
   })
   @IsOptional()
-  @IsEnum(['light', 'dark'], {
-    message: 'theme must be either "light" or "dark"',
+  @IsEnum(['light', 'dark', 'ocean', 'sunset'], {
+    message: 'theme must be either "light" or "dark" or "ocean" or "sunset"',
   })
-  theme?: 'light' | 'dark';
+  theme?: 'light' | 'dark' | 'ocean' | 'sunset';
 }
