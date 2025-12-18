@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -40,6 +41,24 @@ export class UserController {
   @UseGuards(AuthGuard)
   getCurrentUser(@Req() request: AuthRequest) {
     return this.userService.getCurrentUser(request.user);
+  }
+
+  @Post('profile/:id/follow')
+  @UseGuards(AuthGuard)
+  followUser(@Req() request: AuthRequest, @Param('id') id: string) {
+    return this.userService.followUser(request.user, id);
+  }
+
+  @Delete('profile/:id/follow')
+  @UseGuards(AuthGuard)
+  unfollowUser(@Req() request: AuthRequest, @Param('id') id: string) {
+    return this.userService.unfollowUser(request.user, id);
+  }
+
+  @Get('profile/:id/is-following')
+  @UseGuards(AuthGuard)
+  isFollowing(@Req() request: AuthRequest, @Param('id') id: string) {
+    return this.userService.isFollowing(request.user, id);
   }
 
   @Get('/current')

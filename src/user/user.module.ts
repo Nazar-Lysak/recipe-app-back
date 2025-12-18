@@ -11,10 +11,11 @@ import { UserEntity } from './entity/user.entity';
 import { UserProfileEntity } from './entity/user-profile.entity';
 import { AuthMiddleware } from './middlewares/auth.middleware';
 import { AvatarGeneratorModule } from '@/avatar-generator/avatar-generator.module';
+import { FollowProfileEntity } from './entity/follow-profile.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, UserProfileEntity]),
+    TypeOrmModule.forFeature([UserEntity, UserProfileEntity, FollowProfileEntity]),
     AvatarGeneratorModule,
   ],
   controllers: [UserController],

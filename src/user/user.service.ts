@@ -11,6 +11,7 @@ import { UserProfileEntity } from './entity/user-profile.entity';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { nanoid } from 'nanoid';
 import { AvatarGeneratorService } from '@/avatar-generator/avatar-generator.service';
+import { FollowProfileEntity } from './entity/follow-profile.entity';
 
 @Injectable()
 export class UserService {
@@ -19,6 +20,8 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
     @InjectRepository(UserProfileEntity)
     private userProfileRepository: Repository<UserProfileEntity>,
+    @InjectRepository(FollowProfileEntity)
+    private followProfileRepository: Repository<FollowProfileEntity>,
     private readonly avatarGeneratorService: AvatarGeneratorService,
   ) {}
 
@@ -68,6 +71,113 @@ export class UserService {
     delete user.password;
 
     return { ...user, ...userProfile };
+  }
+
+  async followUser(currentUser: any, id: string)  {
+
+    if(currentUser.id === id) {
+      throw new HttpException(
+        'You cannot follow yourself',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const followerProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: currentUser.id } },
+    });
+
+    if(!followerProfile) {
+      throw new HttpException('Follower profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    const followingProfile = await this.userProfileRepository.findOne({
+      where: { user: { id } },
+    });
+
+    if(!followingProfile) {
+      throw new HttpException('Following profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    const existingFollow = await this.followProfileRepository.findOne({
+      where: {
+        followerId: currentUser.id,
+        followingId: id,
+      },
+    });
+    
+    if(existingFollow) {
+      throw new HttpException(
+        'You are already following this user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const followProfile = new FollowProfileEntity();
+    Object.assign(followProfile, {
+      followerId: currentUser.id,
+      followingId: id,
+    });
+
+    followingProfile.followers_count++;
+    followerProfile.following_count++;
+
+    await this.userProfileRepository.save(followingProfile);
+    await this.userProfileRepository.save(followerProfile);
+    await this.followProfileRepository.save(followProfile);
+
+    return { message: 'Successfully followed the user' };
+  }
+
+  async unfollowUser(currentUser: any, id: string) {
+    const followerProfile = await this.userProfileRepository.findOne({
+      where: { user: { id: currentUser.id } },
+    });
+
+    if(!followerProfile) {
+      throw new HttpException('Follower profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    const followingProfile = await this.userProfileRepository.findOne({
+      where: { user: { id } },
+    });
+
+    if(!followingProfile) {
+      throw new HttpException('Following profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    const existingFollow = await this.followProfileRepository.findOne({
+      where: {
+        followerId: currentUser.id,
+        followingId: id,
+      },
+    });
+    
+    if(!existingFollow) {
+      throw new HttpException(
+        'You are not following this user',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    followingProfile.followers_count--;
+    followerProfile.following_count--;
+
+    await this.userProfileRepository.save(followingProfile);
+    await this.userProfileRepository.save(followerProfile);
+    await this.followProfileRepository.remove(existingFollow);
+
+    return { message: 'Successfully unfollowed the user' };
+  }
+
+  async isFollowing(user: any, targetUserId: string) {
+    const follow = await this.followProfileRepository.findOne({
+      where: {
+        followerId: user.id,
+        followingId: targetUserId,
+      },
+    });
+
+    return { isFollowing: !!follow };
   }
 
   async getCurrentUserData(user: any) {
@@ -245,3 +355,4 @@ export class UserService {
     };
   }
 }
+

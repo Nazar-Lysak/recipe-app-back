@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
@@ -23,7 +23,7 @@ async function bootstrap() {
     origin: [process.env.FRONT_URL],
     credentials: true,
   });
-
+  
   await app.listen(Number(process.env.PORT));
 }
 bootstrap();

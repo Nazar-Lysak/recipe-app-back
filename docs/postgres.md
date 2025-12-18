@@ -26,6 +26,12 @@ SELECT * FROM categories;
 INSERT INTO categories(category) VALUES('Lunch');
 ```
 
+## Delete data from table
+```sql
+-- Delete all rows
+DELETE FROM follow_profiles;
+
+
 ## Create backup
 ```sql
 docker exec recipe_app_postgres pg_dump -U nestuser recipe_app_db > backup.sql
@@ -38,7 +44,7 @@ docker exec -it recipe_app_postgres psql -U nestuser -d recipe_app_db -c "DROP S
 
 ## Restore backup
 ```sql
-docker exec -i recipe_app_postgres psql -U nestuser -d recipe_app_db < backup.sql
+docker exec -i recipe_app_postgres psql -U nestuser -d recipe_app_db < likes_backup.sql
 ```
 
 ## Exit

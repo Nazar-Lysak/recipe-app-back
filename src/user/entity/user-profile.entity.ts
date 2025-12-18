@@ -8,7 +8,6 @@ import {
   JoinTable,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { RecipeEntity } from '@/recipe/entity/recipe.entity';
 
 @Entity('user_profiles')
 export class UserProfileEntity {
