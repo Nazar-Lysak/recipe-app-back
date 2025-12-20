@@ -25,8 +25,7 @@ export class UpdateUserDto {
 
   @ApiProperty({ description: 'Avatar URL of the user', required: false })
   @IsOptional()
-  @IsUrl()
-  readonly avatar_url?: string;
+  avatar_url?: File | string;
 
   @ApiProperty({ description: 'Banner URL of the user', required: false })
   @IsOptional()

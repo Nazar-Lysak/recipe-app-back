@@ -3,7 +3,13 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class AvatarGeneratorService {
   generateAvatarUrl(): string {
-    const avatarUrls = [
+    const avatarUrls = this.listDefaultAvatars();
+    const randomIndex = Math.floor(Math.random() * avatarUrls.length);
+    return avatarUrls[randomIndex];
+  }
+
+  listDefaultAvatars(): string[] {
+    return [
       'https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811673/panda_xgahuc.png',
       'https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811672/fox_pgf15d.png',
       'https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811671/bunny_vved8v.png',
@@ -13,10 +19,6 @@ export class AvatarGeneratorService {
       'https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811668/elephant_mtczib.png',
       'https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811668/cat_zg5tls.png',
       'https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811668/dog_urgwjo.png',
-      'https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811667/penguin_vzcpbi.png',
     ];
-
-    const randomIndex = Math.floor(Math.random() * avatarUrls.length);
-    return avatarUrls[randomIndex];
   }
 }

@@ -12,6 +12,8 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { nanoid } from 'nanoid';
 import { AvatarGeneratorService } from '@/avatar-generator/avatar-generator.service';
 import { FollowProfileEntity } from './entity/follow-profile.entity';
+import { CloudinaryService } from '@/cloudinary/cloudinary.service';
+import { CLOUDINARY_DIR } from '@/config/couldinary.config';
 
 @Injectable()
 export class UserService {
@@ -23,6 +25,7 @@ export class UserService {
     @InjectRepository(FollowProfileEntity)
     private followProfileRepository: Repository<FollowProfileEntity>,
     private readonly avatarGeneratorService: AvatarGeneratorService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async getAllUsers() {
@@ -249,6 +252,25 @@ export class UserService {
 
     if (!currentUserProfile) {
       throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    const image = updateUserDto.avatar_url;
+
+    if (image && typeof image === 'string' && image.startsWith('data:')) {
+      if (currentUserProfile.avatar_url) {
+        const oldPublicId = this.cloudinaryService.extractPublicId(
+          currentUserProfile.avatar_url,
+        );
+        if (oldPublicId) {
+          await this.cloudinaryService.deleteImage(oldPublicId);
+        }
+      }
+
+      const uploadResult = await this.cloudinaryService.uploadBase64(
+        CLOUDINARY_DIR.AVATARS,
+        image,
+      );
+      updateUserDto.avatar_url = uploadResult.secure_url;
     }
 
     Object.assign(currentUserProfile, updateUserDto);

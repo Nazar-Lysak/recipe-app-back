@@ -6,3 +6,9 @@ export default (): ConfigOptions => ({
   api_secret: process.env.CLOUDINARY_API_SECRET,
   secure: true,
 });
+
+export const CLOUDINARY_DIR = {
+  AVATARS: 'avatars',
+  CATEGORIES: 'categories',
+  RECIPES: 'recipes',
+};
