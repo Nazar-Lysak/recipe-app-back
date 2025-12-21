@@ -14,6 +14,7 @@ import { AvatarGeneratorService } from '@/avatar-generator/avatar-generator.serv
 import { FollowProfileEntity } from './entity/follow-profile.entity';
 import { CloudinaryService } from '@/cloudinary/cloudinary.service';
 import { CLOUDINARY_DIR } from '@/config/couldinary.config';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 @Injectable()
 export class UserService {
@@ -336,6 +337,45 @@ export class UserService {
     return this.generateUserResponse(user);
   }
 
+  async changePassword(
+    user: any,
+    changePasswordDto: ChangePasswordDto,
+  ): Promise<any> {
+    const { newPassword, currentPassword } = changePasswordDto;
+    const existingUser = await this.findById(user.id);
+
+    if (newPassword === currentPassword) {
+      throw new HttpException(
+        'New password must be different from current password',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (!existingUser) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const compareCurrentPassword = await compare(
+      currentPassword,
+      existingUser.password,
+    );
+    if (!compareCurrentPassword) {
+      throw new HttpException(
+        'Current password is incorrect',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    const userToUpdate = new UserEntity();
+    Object.assign(userToUpdate, {
+      ...existingUser,
+      password: newPassword,
+      id: user.id,
+    });
+    await this.userRepository.save(userToUpdate);
+
+    return this.generateUserResponse(existingUser);
+  }
+
   async forgotPassword(email: string): Promise<any> {
     const user = await this.userRepository.findOne({ where: { email } });
     if (user) {
@@ -379,6 +419,9 @@ export class UserService {
   generateUserResponse(user: UserEntity) {
     if (!user.id) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (user.password) {
+      delete user.password;
     }
     return {
       user: {

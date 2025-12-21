@@ -21,6 +21,7 @@ import { UpdateUserDto } from './dto/updateUser.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { GetUserByIdDto } from './dto/getUserById.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 @ApiTags('Users')
 @Controller('user')
@@ -93,6 +94,19 @@ export class UserController {
   @Post('login')
   loginUser(@Body() loginUserDto: loginUserDto): Promise<any> {
     return this.userService.loginUser(loginUserDto);
+  }
+
+  @Put('current/password')
+  @UsePipes(new ValidationPipe())
+  @UseGuards(AuthGuard)
+  changePassword(
+    @Req() req,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ): Promise<any> {
+    return this.userService.changePassword(
+      req.user as AuthRequest,
+      changePasswordDto,
+    );
   }
 
   @Post('forgot-password')
