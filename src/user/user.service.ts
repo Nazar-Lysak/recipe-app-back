@@ -288,6 +288,8 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<any> {
     const { email, username } = createUserDto;
 
+    // throw new HttpException('Invalid or expired link', HttpStatus.BAD_REQUEST);
+
     const emailExists = await this.userRepository.findOne({
       where: { email },
     });
@@ -311,6 +313,8 @@ export class UserService {
     const newUser = new UserEntity();
     Object.assign(newUser, createUserDto);
 
+
+    // перенести після відправки емейлу
     const savedUser = await this.userRepository.save(newUser);
     const randomAvatar = this.avatarGeneratorService.generateAvatarUrl();
 
@@ -320,7 +324,31 @@ export class UserService {
     newProfile.avatar_url = randomAvatar;
     await this.userProfileRepository.save(newProfile);
 
+    const verifyLink = 'http://localhost:5173/verify'
+
+
+    const emailResult = await this.mailService.sendRegisterEmail(
+      savedUser.email,
+      savedUser.username,
+      verifyLink
+    );
+
+    console.log('emailResult', emailResult);
+
+    if (!emailResult.success) {
+      throw new HttpException(
+        `Failed to send welcome email`,
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+    }
+
+
+
+
+
+
     delete savedUser.password;
+    throw new HttpException('email development', HttpStatus.BAD_REQUEST);
     return this.generateUserResponse(savedUser);
   }
 
@@ -394,7 +422,7 @@ export class UserService {
         email,
         user?.username || 'User',
         resetLink,
-        'Password Reset Request',
+        // 'Password Reset Request',
       );
 
       if (!emailResult.success) {

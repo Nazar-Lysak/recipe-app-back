@@ -37,6 +37,20 @@ export class MailService {
     );
   }
 
+  async sendRegisterEmail(
+    to: string,
+    name: string,
+    verifyLink: string,
+    customSubject?: string,
+  ): Promise<EmailResponse> {
+    return this.sendTemplatedEmail(
+      'registerEmail',
+      [{ email: to, name }],
+      { name, verifyLink },
+      customSubject,
+    );
+  }
+
   async sendTemplatedEmail(
     templateKey: keyof typeof EMAIL_TEMPLATES_REGISTRY,
     recipients: EmailRecipient[],

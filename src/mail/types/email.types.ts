@@ -26,6 +26,7 @@ export enum EmailTemplate {
   WELCOME = 'welcome.hbs',
   VERIFY_EMAIL = 'verify-email.hbs',
   PASSWORD_CHANGED = 'password-changed.hbs',
+  SIGNUP_CONFIRMATION = 'register-email.hbs',
 }
 
 export interface TemplateData {
