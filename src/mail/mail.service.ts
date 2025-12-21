@@ -40,13 +40,13 @@ export class MailService {
   async sendRegisterEmail(
     to: string,
     name: string,
-    verifyLink: string,
+    // verifyLink: string,
     customSubject?: string,
   ): Promise<EmailResponse> {
     return this.sendTemplatedEmail(
       'registerEmail',
       [{ email: to, name }],
-      { name, verifyLink },
+      { name, /* verifyLink */ },
       customSubject,
     );
   }

@@ -324,16 +324,12 @@ export class UserService {
     newProfile.avatar_url = randomAvatar;
     await this.userProfileRepository.save(newProfile);
 
-    const verifyLink = 'http://localhost:5173/verify'
-
-
+    // const verifyLink = 'http://localhost:5173/verify';
     const emailResult = await this.mailService.sendRegisterEmail(
       savedUser.email,
       savedUser.username,
-      verifyLink
+      // verifyLink
     );
-
-    console.log('emailResult', emailResult);
 
     if (!emailResult.success) {
       throw new HttpException(
@@ -342,13 +338,7 @@ export class UserService {
       );
     }
 
-
-
-
-
-
     delete savedUser.password;
-    throw new HttpException('email development', HttpStatus.BAD_REQUEST);
     return this.generateUserResponse(savedUser);
   }
 
