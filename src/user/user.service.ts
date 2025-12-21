@@ -382,25 +382,23 @@ export class UserService {
   async forgotPassword(email: string): Promise<any> {
     const user = await this.userRepository.findOne({ where: { email } });
 
-    let resetToken = '';
     if (user) {
-      resetToken = nanoid(64);
-    }
+      const resetToken = nanoid(64);
+      const resetLink = `${process.env.FRONT_URL}/login?token=${resetToken}`;
 
-    const resetLink = `http://localhost:5173/login?token=${resetToken}`;
-
-    const emailResult = await this.mailService.sendForgotPasswordEmail(
-      email,
-      user?.username || 'User',
-      resetLink,
-      'Password Reset Request',
-    );
-
-    if (!emailResult.success) {
-      throw new HttpException(
-        `Failed to send password reset email link`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
+      const emailResult = await this.mailService.sendForgotPasswordEmail(
+        email,
+        user?.username || 'User',
+        resetLink,
+        'Password Reset Request',
       );
+
+      if (!emailResult.success) {
+        throw new HttpException(
+          `Failed to send password reset email link`,
+          HttpStatus.SERVICE_UNAVAILABLE,
+        );
+      }
     }
 
     return {
