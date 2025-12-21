@@ -22,6 +22,7 @@ import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { GetUserByIdDto } from './dto/getUserById.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
+import { RestorePasswordDto } from './dto/restorePassword.dto';
 
 @ApiTags('Users')
 @Controller('user')
@@ -113,4 +114,13 @@ export class UserController {
   forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<any> {
     return this.userService.forgotPassword(forgotPasswordDto.email);
   }
+
+  @Post('restore-password')
+  @UsePipes(new ValidationPipe())
+  restorePassword(
+    @Body() body: RestorePasswordDto,
+  ): Promise<RestorePasswordDto> {
+    return this.userService.restorePassword(body);
+  }
+
 }

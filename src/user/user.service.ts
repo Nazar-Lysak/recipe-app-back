@@ -17,6 +17,7 @@ import { CLOUDINARY_DIR } from '@/config/couldinary.config';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '@/mail/mail.service';
 import { ResetPasswordEntity } from './entity/reset-password.entity';
+import { RestorePasswordDto } from './dto/restorePassword.dto';
 
 @Injectable()
 export class UserService {
@@ -382,12 +383,12 @@ export class UserService {
     return this.generateUserResponse(existingUser);
   }
 
-  async forgotPassword(email: string): Promise<any> {
+  async forgotPassword(email: string): Promise<{ message: string }> {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (user) {
       const resetToken = nanoid(64);
-      const resetLink = `${process.env.FRONT_URL}/login?token=${resetToken}`;
+      const resetLink = `${process.env.FRONT_URL}/restore-password?token=${resetToken}`;
 
       const emailResult = await this.mailService.sendForgotPasswordEmail(
         email,
@@ -414,6 +415,39 @@ export class UserService {
       message:
         'A password reset link has been sent to your email address if it exists in our system.',
     };
+  }
+
+  async restorePassword(body: RestorePasswordDto): Promise<any> {
+    const {token, password} = body;
+    const resetEntry = await this.resetPasswordRepository.findOne({
+      where: { token },
+      relations: ['user'],
+    });
+
+    if (!resetEntry) {
+      throw new HttpException('Invalid or expired link', HttpStatus.BAD_REQUEST);
+    }
+
+    const isExpired = new Date() > new Date(resetEntry.expiresAt);
+    if(isExpired) {
+      throw new HttpException('Link has expired', HttpStatus.BAD_REQUEST);
+    }
+
+    const userToUpdate = new UserEntity();
+    Object.assign(userToUpdate, {
+      ...resetEntry.user, password })
+
+    const savedUser = await this.userRepository.save(userToUpdate);
+
+    if(!savedUser) {
+      throw new HttpException('Failed to reset password', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    resetEntry.usedAt = new Date();
+    await this.resetPasswordRepository.save(resetEntry);
+    delete resetEntry.user.password;
+    
+    return resetEntry;
   }
 
   findById(id: string): Promise<any> {
