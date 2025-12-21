@@ -8,6 +8,8 @@ import dbConfigProd from './config/db.config.prod';
 import dbConfigDev from '@/config/db.config.dev';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AvatarGeneratorModule } from './avatar-generator/avatar-generator.module';
+import { MailService } from './mail/mail.service';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { AvatarGeneratorModule } from './avatar-generator/avatar-generator.modul
     RecipeModule,
     CloudinaryModule,
     AvatarGeneratorModule,
+    MailModule,
   ],
+  providers: [MailService],
 })
 export class AppModule {}

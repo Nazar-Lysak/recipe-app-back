@@ -13,6 +13,7 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
 import { AvatarGeneratorModule } from '@/avatar-generator/avatar-generator.module';
 import { FollowProfileEntity } from './entity/follow-profile.entity';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
+import { MailModule } from '@/mail/mail.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
     ]),
     AvatarGeneratorModule,
     CloudinaryModule,
+    MailModule,
   ],
   controllers: [UserController],
   providers: [UserService],

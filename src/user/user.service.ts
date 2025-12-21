@@ -15,6 +15,7 @@ import { FollowProfileEntity } from './entity/follow-profile.entity';
 import { CloudinaryService } from '@/cloudinary/cloudinary.service';
 import { CLOUDINARY_DIR } from '@/config/couldinary.config';
 import { ChangePasswordDto } from './dto/changePassword.dto';
+import { MailService } from '@/mail/mail.service';
 
 @Injectable()
 export class UserService {
@@ -27,6 +28,7 @@ export class UserService {
     private followProfileRepository: Repository<FollowProfileEntity>,
     private readonly avatarGeneratorService: AvatarGeneratorService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly mailService: MailService,
   ) {}
 
   async getAllUsers() {
@@ -379,9 +381,26 @@ export class UserService {
 
   async forgotPassword(email: string): Promise<any> {
     const user = await this.userRepository.findOne({ where: { email } });
+
+    let resetToken = '';
     if (user) {
-      const resetToken = nanoid(64);
-      console.log(resetToken);
+      resetToken = nanoid(64);
+    }
+
+    const resetLink = `http://localhost:5173/login?token=${resetToken}`;
+
+    const emailResult = await this.mailService.sendForgotPasswordEmail(
+      email,
+      user?.username || 'User',
+      resetLink,
+      'Password Reset Request',
+    );
+
+    if (!emailResult.success) {
+      throw new HttpException(
+        `Failed to send password reset email link`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     return {
