@@ -344,12 +344,6 @@ export class UserService {
     const { newPassword, currentPassword } = changePasswordDto;
     const existingUser = await this.findById(user.id);
 
-    if (newPassword === currentPassword) {
-      throw new HttpException(
-        'New password must be different from current password',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     if (!existingUser) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -362,6 +356,13 @@ export class UserService {
       throw new HttpException(
         'Current password is incorrect',
         HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (newPassword === currentPassword) {
+      throw new HttpException(
+        'New password must be different from current password',
+        HttpStatus.BAD_REQUEST,
       );
     }
 
