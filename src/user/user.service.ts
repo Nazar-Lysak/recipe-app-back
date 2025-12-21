@@ -16,6 +16,7 @@ import { CloudinaryService } from '@/cloudinary/cloudinary.service';
 import { CLOUDINARY_DIR } from '@/config/couldinary.config';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '@/mail/mail.service';
+import { ResetPasswordEntity } from './entity/reset-password.entity';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,8 @@ export class UserService {
     private userProfileRepository: Repository<UserProfileEntity>,
     @InjectRepository(FollowProfileEntity)
     private followProfileRepository: Repository<FollowProfileEntity>,
+    @InjectRepository(ResetPasswordEntity)
+    private resetPasswordRepository: Repository<ResetPasswordEntity>,
     private readonly avatarGeneratorService: AvatarGeneratorService,
     private readonly cloudinaryService: CloudinaryService,
     private readonly mailService: MailService,
@@ -399,6 +402,12 @@ export class UserService {
           HttpStatus.SERVICE_UNAVAILABLE,
         );
       }
+
+      const forgotPasswordEntry = new ResetPasswordEntity();
+      forgotPasswordEntry.token = resetToken;
+      forgotPasswordEntry.userId = user.id;
+
+      await this.resetPasswordRepository.save(forgotPasswordEntry);
     }
 
     return {

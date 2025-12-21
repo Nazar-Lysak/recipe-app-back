@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { UserProfileEntity } from './user-profile.entity';
 import { RecipeEntity } from '@/recipe/entity/recipe.entity';
+import { ResetPasswordEntity } from './reset-password.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -30,6 +31,9 @@ export class UserEntity {
 
   @OneToMany(() => RecipeEntity, (recipe) => recipe.author)
   recipes: RecipeEntity[];
+
+  @OneToMany(() => ResetPasswordEntity, (token) => token.user)
+  resetPasswordTokens: ResetPasswordEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()

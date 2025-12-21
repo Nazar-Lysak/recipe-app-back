@@ -14,6 +14,7 @@ import { AvatarGeneratorModule } from '@/avatar-generator/avatar-generator.modul
 import { FollowProfileEntity } from './entity/follow-profile.entity';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 import { MailModule } from '@/mail/mail.module';
+import { ResetPasswordEntity } from './entity/reset-password.entity';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { MailModule } from '@/mail/mail.module';
       UserEntity,
       UserProfileEntity,
       FollowProfileEntity,
+      ResetPasswordEntity,
     ]),
     AvatarGeneratorModule,
     CloudinaryModule,
