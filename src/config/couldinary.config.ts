@@ -11,4 +11,5 @@ export const CLOUDINARY_DIR = {
   AVATARS: 'avatars',
   CATEGORIES: 'categories',
   RECIPES: 'recipes',
+  REVIEWS: 'reviews',
 };

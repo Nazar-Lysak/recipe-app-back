@@ -19,7 +19,7 @@ export class ReviewEntity {
     rating: number;
 
     @Column({ nullable: true })
-    imageUrl?: string;
+    image?: string;
 
     @Column({ type: 'text', nullable: true })
     comment: string;

@@ -280,7 +280,7 @@ export class UserService {
       );
       updateUserDto.avatar_url = uploadResult.secure_url;
     }
-
+    
     Object.assign(currentUserProfile, updateUserDto);
 
     return await this.userProfileRepository.save(currentUserProfile);

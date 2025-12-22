@@ -44,7 +44,7 @@ docker exec -it recipe_app_postgres psql -U nestuser -d recipe_app_db -c "DROP S
 
 ## Restore backup
 ```sql
-docker exec -i recipe_app_postgres psql -U nestuser -d recipe_app_db < likes_backup.sql
+docker exec -i recipe_app_postgres psql -U nestuser -d recipe_app_db < backup.sql
 ```
 
 ## Exit

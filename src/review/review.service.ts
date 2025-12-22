@@ -4,19 +4,25 @@ import { ReviewEntity } from './entity/review.entity';
 import { Repository } from 'typeorm';
 import { RecipeEntity } from '@/recipe/entity/recipe.entity';
 import { UserProfileEntity } from '@/user/entity/user-profile.entity';
+import { CloudinaryService } from '@/cloudinary/cloudinary.service';
+import { CLOUDINARY_DIR } from '@/config/couldinary.config';
 
 @Injectable()
 export class ReviewService {
 
-    @InjectRepository(ReviewEntity)
-    private reviewRepository: Repository<ReviewEntity>;
-    @InjectRepository(RecipeEntity)
-    private recipeRepository: Repository<RecipeEntity>;
-    @InjectRepository(UserProfileEntity)
-    private userProfileRepository: Repository<UserProfileEntity>;
+    constructor(
+        @InjectRepository(ReviewEntity)
+        private reviewRepository: Repository<ReviewEntity>,
+        @InjectRepository(RecipeEntity)
+        private recipeRepository: Repository<RecipeEntity>,
+        @InjectRepository(UserProfileEntity)
+        private userProfileRepository: Repository<UserProfileEntity>,
+        private readonly cloudinaryService: CloudinaryService,
+    ) {}
 
-    async createReview(body, user, recipeId) {
+    async createReview(body, user: UserProfileEntity, recipeId: string) {
 
+        const { image } = body;
         const recipe = await this.recipeRepository.findOne({
             where: { id: recipeId },
         });
@@ -40,12 +46,20 @@ export class ReviewService {
             },
         });
 
-
         if (existingReview) {
             throw new HttpException(
                 'You have already reviewed this recipe',
                 HttpStatus.BAD_REQUEST,
             );
+        }
+        
+        if (image && typeof image === 'string' && image.startsWith('data:')) {
+            const uploadResult = await this.cloudinaryService.uploadBase64(
+                CLOUDINARY_DIR.REVIEWS,
+                image,
+            );
+
+            body.image = uploadResult.secure_url;
         }
 
         const review = new ReviewEntity();
@@ -54,10 +68,7 @@ export class ReviewService {
         review.recipeId = recipeId;
 
         const savedReview = await this.reviewRepository.save(review);
-
-        // Оновлюємо статистику рецепту
         await this.updateRecipeStats(recipeId);
-
         return { message: 'Review created successfully', review: savedReview };
     }
 
@@ -90,7 +101,7 @@ export class ReviewService {
         const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
 
         await this.recipeRepository.update(recipeId, {
-            averageRating: Math.round(averageRating * 10) / 10, // округлюємо до 1 знака
+            averageRating: Math.round(averageRating * 10) / 10,
             reviewsCount: reviews.length,
         });
     }
