@@ -27,13 +27,13 @@ export class UserEntity {
   password?: string;
 
   @OneToOne(() => UserProfileEntity, (profile) => profile.user)
-  profile: UserProfileEntity;
+  profile?: UserProfileEntity;
 
   @OneToMany(() => RecipeEntity, (recipe) => recipe.author)
-  recipes: RecipeEntity[];
+  recipes?: RecipeEntity[];
 
   @OneToMany(() => ResetPasswordEntity, (token) => token.user)
-  resetPasswordTokens: ResetPasswordEntity[];
+  resetPasswordTokens?: ResetPasswordEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()

@@ -1,6 +1,6 @@
 import { CategoryEntity } from '@/category/entity/category.entity';
+import { ReviewEntity } from '@/review/entity/review.entity';
 import { UserEntity } from '@/user/entity/user.entity';
-import { UserProfileEntity } from '@/user/entity/user-profile.entity';
 import {
   BeforeUpdate,
   Column,
@@ -8,6 +8,7 @@ import {
   JoinColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -37,6 +38,12 @@ export class RecipeEntity {
   @Column({ default: 0 })
   favouriteCount: number;
 
+  @Column({ type: 'float', default: 0 })
+  averageRating: number;
+
+  @Column({ default: 0 })
+  reviewsCount: number;
+
   @Column('text', { array: true })
   ingredients: string[];
 
@@ -58,6 +65,9 @@ export class RecipeEntity {
   @ManyToOne(() => CategoryEntity)
   @JoinColumn({ name: 'categoryId' })
   category: CategoryEntity;
+
+  @OneToMany(() => ReviewEntity, review => review.recipe)
+  reviews: ReviewEntity[];
 
   @Column('text', { array: true, default: '{}' })
   likedByUserIds: string[];

@@ -10,6 +10,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AvatarGeneratorModule } from './avatar-generator/avatar-generator.module';
 import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { MailModule } from './mail/mail.module';
     CloudinaryModule,
     AvatarGeneratorModule,
     MailModule,
+    ReviewModule,
   ],
   providers: [MailService],
 })

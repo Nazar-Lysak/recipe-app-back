@@ -6,8 +6,10 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { ReviewEntity } from '@/review/entity/review.entity';
 
 @Entity('user_profiles')
 export class UserProfileEntity {
@@ -84,6 +86,9 @@ export class UserProfileEntity {
   @OneToOne(() => UserEntity, (user) => user.profile)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
+
+  @OneToMany(() => ReviewEntity, (review) => review.user)
+reviews: ReviewEntity[];
 
   @Column('text', { array: true, default: '{}' })
   liked_recipes: string[];

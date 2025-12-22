@@ -234,6 +234,7 @@ export class UserService {
 
     const userProfile = await this.userProfileRepository.findOne({
       where: { user: { id: user.id } },
+      relations: ['reviews'],
     });
 
     delete user.password;
