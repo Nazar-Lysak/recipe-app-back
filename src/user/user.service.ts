@@ -280,7 +280,7 @@ export class UserService {
       );
       updateUserDto.avatar_url = uploadResult.secure_url;
     }
-    
+
     Object.assign(currentUserProfile, updateUserDto);
 
     return await this.userProfileRepository.save(currentUserProfile);
@@ -313,7 +313,6 @@ export class UserService {
 
     const newUser = new UserEntity();
     Object.assign(newUser, createUserDto);
-
 
     // перенести після відправки емейлу
     const savedUser = await this.userRepository.save(newUser);
@@ -437,35 +436,43 @@ export class UserService {
   }
 
   async restorePassword(body: RestorePasswordDto): Promise<any> {
-    const {token, password} = body;
+    const { token, password } = body;
     const resetEntry = await this.resetPasswordRepository.findOne({
       where: { token },
       relations: ['user'],
     });
 
     if (!resetEntry) {
-      throw new HttpException('Invalid or expired link', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Invalid or expired link',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const isExpired = new Date() > new Date(resetEntry.expiresAt);
-    if(isExpired) {
+    if (isExpired) {
       throw new HttpException('Link has expired', HttpStatus.BAD_REQUEST);
     }
 
     const userToUpdate = new UserEntity();
     Object.assign(userToUpdate, {
-      ...resetEntry.user, password })
+      ...resetEntry.user,
+      password,
+    });
 
     const savedUser = await this.userRepository.save(userToUpdate);
 
-    if(!savedUser) {
-      throw new HttpException('Failed to reset password', HttpStatus.INTERNAL_SERVER_ERROR);
+    if (!savedUser) {
+      throw new HttpException(
+        'Failed to reset password',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
 
     resetEntry.usedAt = new Date();
     await this.resetPasswordRepository.save(resetEntry);
     delete resetEntry.user.password;
-    
+
     return resetEntry;
   }
 

@@ -9,6 +9,7 @@ import { CategoryEntity } from '@/category/entity/category.entity';
 import { CloudinaryService } from '@/cloudinary/cloudinary.service';
 import { RecipesResponseInterface } from '@/types/recipesRespone.interfase';
 import { UserProfileEntity } from '@/user/entity/user-profile.entity';
+import { CLOUDINARY_DIR } from '@/config/couldinary.config';
 
 @Injectable()
 export class RecipeService {
@@ -47,6 +48,16 @@ export class RecipeService {
 
     if (!userProfile) {
       throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    const { image } = createRecipeDto;
+    if (image && typeof image === 'string' && image.startsWith('data:')) {
+      const uploadResult = await this.cloudinaryService.uploadBase64(
+        CLOUDINARY_DIR.RECIPES,
+        image,
+      );
+
+      recipe.image = uploadResult.secure_url;
     }
 
     userProfile.recipes_count++;
@@ -120,7 +131,6 @@ export class RecipeService {
       where: { id },
       relations: ['reviews'],
     });
-
 
     if (!recipe) {
       throw new HttpException('Recipe not found', HttpStatus.NOT_FOUND);

@@ -22,7 +22,7 @@ export const EMAIL_TEMPLATES_REGISTRY: Record<string, TemplateConfig> = {
     template: EmailTemplate.PASSWORD_CHANGED,
     defaultSubject: 'Your Password Has Been Changed',
   },
-    registerEmail: {
+  registerEmail: {
     template: EmailTemplate.SIGNUP_CONFIRMATION,
     defaultSubject: 'Welcome to Recipe App - Registration Successful',
   },

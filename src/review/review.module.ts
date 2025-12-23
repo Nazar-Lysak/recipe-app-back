@@ -8,8 +8,11 @@ import { UserProfileEntity } from '@/user/entity/user-profile.entity';
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ReviewEntity, RecipeEntity, UserProfileEntity]), CloudinaryModule],
+  imports: [
+    TypeOrmModule.forFeature([ReviewEntity, RecipeEntity, UserProfileEntity]),
+    CloudinaryModule,
+  ],
   controllers: [ReviewController],
-  providers: [ReviewService]
+  providers: [ReviewService],
 })
 export class ReviewModule {}

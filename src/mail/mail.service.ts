@@ -46,7 +46,7 @@ export class MailService {
     return this.sendTemplatedEmail(
       'registerEmail',
       [{ email: to, name }],
-      { name, /* verifyLink */ },
+      { name /* verifyLink */ },
       customSubject,
     );
   }

@@ -122,5 +122,4 @@ export class UserController {
   ): Promise<RestorePasswordDto> {
     return this.userService.restorePassword(body);
   }
-
 }

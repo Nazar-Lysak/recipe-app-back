@@ -66,7 +66,7 @@ export class RecipeEntity {
   @JoinColumn({ name: 'categoryId' })
   category: CategoryEntity;
 
-  @OneToMany(() => ReviewEntity, review => review.recipe)
+  @OneToMany(() => ReviewEntity, (review) => review.recipe)
   reviews: ReviewEntity[];
 
   @Column('text', { array: true, default: '{}' })

@@ -88,7 +88,7 @@ export class UserProfileEntity {
   user: UserEntity;
 
   @OneToMany(() => ReviewEntity, (review) => review.user)
-reviews: ReviewEntity[];
+  reviews: ReviewEntity[];
 
   @Column('text', { array: true, default: '{}' })
   liked_recipes: string[];
