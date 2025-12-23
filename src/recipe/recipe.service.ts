@@ -85,12 +85,20 @@ export class RecipeService {
       });
     }
 
+    if (query.likedBy) {
+      queryBuilder.andWhere(':userId = ANY(recipe.likedByUserIds)', {
+        userId: query.likedBy,
+      });
+    }
+
     if (query.top) {
-      queryBuilder.orderBy('recipe.favouriteCount', 'DESC');
+      queryBuilder.orderBy('recipe.averageRating', 'DESC');
     } else if (query.oldest) {
       queryBuilder.orderBy('recipe.createdAt', 'ASC');
     } else if (query.newest) {
       queryBuilder.orderBy('recipe.createdAt', 'DESC');
+    } else if(query.liked) {
+      queryBuilder.orderBy('recipe.favouriteCount', 'DESC');
     } else {
       queryBuilder.orderBy('recipe.createdAt', 'DESC');
     }
@@ -103,6 +111,7 @@ export class RecipeService {
       queryBuilder.offset(parseInt(query.offset));
     }
 
+    const recipesCount = await queryBuilder.getCount();
     let recipesList = await queryBuilder.getMany();
 
     if (query.uniqueAuthors) {
@@ -114,8 +123,6 @@ export class RecipeService {
       });
       recipesList = Array.from(uniqueMap.values());
     }
-
-    const recipesCount = recipesList.length;
 
     recipesList.forEach((recipe) => {
       if (recipe.author) {
