@@ -61,9 +61,6 @@ export class UserProfileEntity {
   @Column({ default: 0 })
   likes_received: number;
 
-  // @Column({ type: 'float', default: 0 })
-  // rating: number;
-
   @Column({ default: false })
   is_private: boolean;
 

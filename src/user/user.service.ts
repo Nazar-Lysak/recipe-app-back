@@ -36,7 +36,11 @@ export class UserService {
   ) {}
 
   async getAllUsers() {
-    const users = await this.userRepository.find();
+    const users = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile', 'follow_profile')
+      .getMany();
+      
     const createResult = users.map((user) => {
       const { password, ...result } = user;
       return result;
@@ -45,9 +49,14 @@ export class UserService {
   }
 
   async getAllProfiles(query): Promise<any> {
-    const queryBuilder = await this.userProfileRepository
+    const queryBuilder = this.userProfileRepository
       .createQueryBuilder('profile')
-      .leftJoinAndSelect('profile.user', 'user');
+      .leftJoinAndSelect('profile.user', 'user')
+      .leftJoinAndSelect('user.followers', 'followers');
+
+    if(query.date) {
+      queryBuilder.orderBy('profile.created_at', 'DESC');
+    }
 
     if (query.top) {
       queryBuilder.orderBy('profile.likes_received', 'DESC');
@@ -62,8 +71,22 @@ export class UserService {
     }
 
     let profilesList = await queryBuilder.getMany();
+    
+    const profiles = profilesList.map((profile) => {
+      const followers = profile.user?.followers || [];
+      
+      if (profile.user) {
+        delete profile.user.password;
+        delete profile.user.followers;
+      }
+      
+      return {
+        ...profile,
+        followers,
+      };
+    });
 
-    return { profiles: profilesList };
+    return { profiles };
   }
 
   async getCurrentUser(user: any) {

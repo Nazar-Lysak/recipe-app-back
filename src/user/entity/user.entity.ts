@@ -11,6 +11,7 @@ import {
 import { UserProfileEntity } from './user-profile.entity';
 import { RecipeEntity } from '@/recipe/entity/recipe.entity';
 import { ResetPasswordEntity } from './reset-password.entity';
+import { FollowProfileEntity } from './follow-profile.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -34,6 +35,10 @@ export class UserEntity {
 
   @OneToMany(() => ResetPasswordEntity, (token) => token.user)
   resetPasswordTokens?: ResetPasswordEntity[];
+
+  // followers = хто followить цього користувача (через followingId)
+  @OneToMany(() => FollowProfileEntity, (follow) => follow.following)
+  followers?: FollowProfileEntity[];
 
   @BeforeInsert()
   @BeforeUpdate()
