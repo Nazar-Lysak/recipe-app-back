@@ -51,40 +51,40 @@ export class UserService {
   async getAllProfiles(query): Promise<any> {
     const queryBuilder = this.userProfileRepository
       .createQueryBuilder('profile')
-      .leftJoinAndSelect('profile.user', 'user')
-      .leftJoinAndSelect('user.followers', 'followers');
+      .leftJoinAndSelect('profile.user', 'user');
 
     if(query.date) {
       queryBuilder.orderBy('profile.created_at', 'DESC');
-    }
-
-    if (query.top) {
+    } else if (query.top) {
       queryBuilder.orderBy('profile.likes_received', 'DESC');
     }
 
-    if (query.limit) {
-      queryBuilder.limit(parseInt(query.limit));
-    }
-
     if (query.offset) {
-      queryBuilder.offset(parseInt(query.offset));
+      queryBuilder.skip(parseInt(query.offset));
     }
 
-    let profilesList = await queryBuilder.getMany();
+    if (query.limit) {
+      queryBuilder.take(parseInt(query.limit));
+    }
+
+    const profilesList = await queryBuilder.getMany();
     
-    const profiles = profilesList.map((profile) => {
-      const followers = profile.user?.followers || [];
-      
-      if (profile.user) {
-        delete profile.user.password;
-        delete profile.user.followers;
-      }
-      
-      return {
-        ...profile,
-        followers,
-      };
-    });
+    const profiles = await Promise.all(
+      profilesList.map(async (profile) => {
+        const followers = await this.followProfileRepository.find({
+          where: { followingId: profile.user.id },
+        });
+        
+        if (profile.user) {
+          delete profile.user.password;
+        }
+        
+        return {
+          ...profile,
+          followers,
+        };
+      })
+    );
 
     return { profiles };
   }
