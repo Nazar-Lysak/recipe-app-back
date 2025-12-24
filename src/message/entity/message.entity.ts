@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ChatEntity } from '../../chat/entity/chat.entity';
 import { UserEntity } from '@/user/entity/user.entity';
@@ -25,6 +26,12 @@ export class MessageEntity {
   @Column({ default: false })
   isRead: boolean;
 
+  @Column({ default: false })
+  isEdited: boolean;
+
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

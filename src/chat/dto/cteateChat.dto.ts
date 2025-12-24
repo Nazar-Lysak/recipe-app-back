@@ -1,7 +1,6 @@
-import { IsUUID } from "class-validator";
-
+import { IsUUID } from 'class-validator';
 
 export class CreateChatDto {
-    @IsUUID()
-    participantId: string;
+  @IsUUID()
+  participantId: string;
 }

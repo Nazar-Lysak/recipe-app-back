@@ -1,5 +1,5 @@
 import {
-    Body,
+  Body,
   Controller,
   Get,
   Param,
@@ -19,24 +19,26 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Get()
-    @UsePipes(new ValidationPipe())
-    @UseGuards(AuthGuard)
-    getChats() {
-      return this.chatService.getAllChats();
-    }
+  @UsePipes(new ValidationPipe())
+  @UseGuards(AuthGuard)
+  getChats() {
+    return this.chatService.getAllChats();
+  }
 
   @Get(':chatId')
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
-  getMyChats(@Param('chatId') chatId: string) : Promise<ChatEntity[]> {
+  getMyChats(@Param('chatId') chatId: string): Promise<ChatEntity[]> {
     return this.chatService.getMyChats(chatId);
   }
 
   @Post()
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
-  createChat(@Body() createChatDto: CreateChatDto, @Req() req): Promise<ChatEntity> {
+  createChat(
+    @Body() createChatDto: CreateChatDto,
+    @Req() req,
+  ): Promise<ChatEntity> {
     return this.chatService.createChat(createChatDto, req.user.id);
   }
 }
-
