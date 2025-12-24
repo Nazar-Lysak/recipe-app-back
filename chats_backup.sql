@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict eCu3SUo8dTInMZEqbCa9IWlUfgGEaHNuRPoCdhKwKfyeQonn4ajZaL8aDbGf4vG
+\restrict G0AILguNJI7xJYvVQC6ZJKKOI29BZbEsE8QWI2na5syYHzkat7rdtBqQzeXsfMU
 
 -- Dumped from database version 16.11 (Debian 16.11-1.pgdg13+1)
 -- Dumped by pg_dump version 16.11 (Debian 16.11-1.pgdg13+1)
@@ -66,6 +66,29 @@ CREATE TABLE public.categories (
 ALTER TABLE public.categories OWNER TO nestuser;
 
 --
+-- Name: chats; Type: TABLE; Schema: public; Owner: nestuser
+--
+
+CREATE TABLE public.chats (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL
+);
+
+
+ALTER TABLE public.chats OWNER TO nestuser;
+
+--
+-- Name: chats_participants_users; Type: TABLE; Schema: public; Owner: nestuser
+--
+
+CREATE TABLE public.chats_participants_users (
+    "chatsId" uuid NOT NULL,
+    "usersId" uuid NOT NULL
+);
+
+
+ALTER TABLE public.chats_participants_users OWNER TO nestuser;
+
+--
 -- Name: follow_profiles; Type: TABLE; Schema: public; Owner: nestuser
 --
 
@@ -77,6 +100,22 @@ CREATE TABLE public.follow_profiles (
 
 
 ALTER TABLE public.follow_profiles OWNER TO nestuser;
+
+--
+-- Name: messages; Type: TABLE; Schema: public; Owner: nestuser
+--
+
+CREATE TABLE public.messages (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    content character varying NOT NULL,
+    "isRead" boolean DEFAULT false NOT NULL,
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL,
+    "chatId" uuid,
+    "senderId" uuid
+);
+
+
+ALTER TABLE public.messages OWNER TO nestuser;
 
 --
 -- Name: recipes; Type: TABLE; Schema: public; Owner: nestuser
@@ -209,12 +248,38 @@ ca4496d1-02ba-4851-9b88-7f21ea0b0692	Напої	https://res.cloudinary.com/dohg7
 
 
 --
+-- Data for Name: chats; Type: TABLE DATA; Schema: public; Owner: nestuser
+--
+
+COPY public.chats (id) FROM stdin;
+83b32cb1-bfaa-45d3-a6e1-ca5d75d20872
+8fa97165-1a2f-41fd-b548-bb4e71cc37d7
+157dc356-ceaa-4a13-bbdc-e2228d8bbfdc
+106aa303-5cec-440b-a714-13d734d98381
+\.
+
+
+--
+-- Data for Name: chats_participants_users; Type: TABLE DATA; Schema: public; Owner: nestuser
+--
+
+COPY public.chats_participants_users ("chatsId", "usersId") FROM stdin;
+83b32cb1-bfaa-45d3-a6e1-ca5d75d20872	9c609877-b2d1-4b90-a21e-44412565a444
+83b32cb1-bfaa-45d3-a6e1-ca5d75d20872	4f053667-43c6-4d17-9ff2-69457e2c1fe3
+8fa97165-1a2f-41fd-b548-bb4e71cc37d7	9c609877-b2d1-4b90-a21e-44412565a444
+8fa97165-1a2f-41fd-b548-bb4e71cc37d7	583b4d78-a2ba-4792-bef7-7f6caf42e913
+157dc356-ceaa-4a13-bbdc-e2228d8bbfdc	9c609877-b2d1-4b90-a21e-44412565a444
+157dc356-ceaa-4a13-bbdc-e2228d8bbfdc	fdc5399f-cadb-4f54-a91b-50ad67c91142
+106aa303-5cec-440b-a714-13d734d98381	4f053667-43c6-4d17-9ff2-69457e2c1fe3
+106aa303-5cec-440b-a714-13d734d98381	fdc5399f-cadb-4f54-a91b-50ad67c91142
+\.
+
+
+--
 -- Data for Name: follow_profiles; Type: TABLE DATA; Schema: public; Owner: nestuser
 --
 
 COPY public.follow_profiles (id, "followerId", "followingId") FROM stdin;
-32d252bf-3e9e-4b97-8a49-9ed9d61924fc	4f053667-43c6-4d17-9ff2-69457e2c1fe3	6d5c01a0-c599-4c73-aada-ccfa8dd6155b
-1af9f35c-ded0-4f50-b9f5-180bb912142f	4f053667-43c6-4d17-9ff2-69457e2c1fe3	583b4d78-a2ba-4792-bef7-7f6caf42e913
 84856aed-ed7c-4dbb-bed3-6faf2f48972d	da40a9cd-f2cb-44ea-a257-3f9d1b6453f9	9c609877-b2d1-4b90-a21e-44412565a444
 f39c7125-5d09-482f-87a0-6ecbd460dde4	da40a9cd-f2cb-44ea-a257-3f9d1b6453f9	6d5c01a0-c599-4c73-aada-ccfa8dd6155b
 a124034d-e5e0-4f92-b023-b66b95ff7ac7	da40a9cd-f2cb-44ea-a257-3f9d1b6453f9	583b4d78-a2ba-4792-bef7-7f6caf42e913
@@ -222,7 +287,24 @@ bd0c9048-3a9e-4904-a6ec-91df4f2c0a63	da40a9cd-f2cb-44ea-a257-3f9d1b6453f9	4f0536
 88139521-903b-4f89-a710-eaddb9da461d	fdc5399f-cadb-4f54-a91b-50ad67c91142	9c609877-b2d1-4b90-a21e-44412565a444
 79421aa4-7dd0-4296-88e0-ee9be0a33f24	fdc5399f-cadb-4f54-a91b-50ad67c91142	4f053667-43c6-4d17-9ff2-69457e2c1fe3
 abe734a5-b304-4bd1-b2ef-0ffe40f88d51	fdc5399f-cadb-4f54-a91b-50ad67c91142	583b4d78-a2ba-4792-bef7-7f6caf42e913
-1d5ab822-ad08-4d1f-8a18-3b7ba114a109	4f053667-43c6-4d17-9ff2-69457e2c1fe3	9c609877-b2d1-4b90-a21e-44412565a444
+54a405f4-8357-4cac-ba37-74a0ceda1285	4f053667-43c6-4d17-9ff2-69457e2c1fe3	b5d166c0-8d8b-44ed-8d07-f7759a7f426b
+ff533813-a8b5-401d-bfcb-8898b74bc0d3	4f053667-43c6-4d17-9ff2-69457e2c1fe3	a172f6b8-46f6-47a5-999f-c0181db58bca
+0f4b87fd-d94f-4bf6-a06f-37caee4c86ee	4f053667-43c6-4d17-9ff2-69457e2c1fe3	9c609877-b2d1-4b90-a21e-44412565a444
+1fcb5570-ef04-48f9-8c36-28fcd96c8323	4f053667-43c6-4d17-9ff2-69457e2c1fe3	583b4d78-a2ba-4792-bef7-7f6caf42e913
+8ef60455-ac85-4c89-aaf1-6b514c9fcd74	9c609877-b2d1-4b90-a21e-44412565a444	583b4d78-a2ba-4792-bef7-7f6caf42e913
+5c9ca929-0d8b-43ad-a2c4-52f6b48146c0	9c609877-b2d1-4b90-a21e-44412565a444	4f053667-43c6-4d17-9ff2-69457e2c1fe3
+d169b087-fa41-447a-abbc-b5e74fe39d77	9c609877-b2d1-4b90-a21e-44412565a444	fdc5399f-cadb-4f54-a91b-50ad67c91142
+bf0a5fbb-e908-4ed9-90f5-de66d827bc5b	583b4d78-a2ba-4792-bef7-7f6caf42e913	da40a9cd-f2cb-44ea-a257-3f9d1b6453f9
+04e5c05a-5b86-4c3c-90c4-b92787c19ec2	583b4d78-a2ba-4792-bef7-7f6caf42e913	fdc5399f-cadb-4f54-a91b-50ad67c91142
+dc973ca7-d149-4dcf-a4d0-a973730d4b3e	583b4d78-a2ba-4792-bef7-7f6caf42e913	6ba456f1-97c1-4a61-ac79-e4afdbad3b19
+\.
+
+
+--
+-- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: nestuser
+--
+
+COPY public.messages (id, content, "isRead", "createdAt", "chatId", "senderId") FROM stdin;
 \.
 
 
@@ -286,10 +368,11 @@ dc2fae41-4285-4d41-afc7-0820eeb7d5a1	Курка в соєво-медовому �
 024d3739-be5b-4a33-b3e4-500bced133aa	Класичний смузі з бананом	Корисний та поживний банановий смузі.	5	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765885555/%D1%81%D0%BC%D1%83%D0%B7%D1%96-%D0%B7-%D0%B1%D0%B0%D0%BD%D0%B0%D0%BD%D0%BE%D0%BC_ybosy0.png		1	{Банан,Молоко,Йогурт,Мед}	{"Наріжте банан шматочками.","Додайте молоко, йогурт та мед.","Зблендеруйте до однорідної консистенції.","Подавайте одразу охолодженим."}	9c609877-b2d1-4b90-a21e-44412565a444	2025-12-14 10:00:47.364396	2025-12-19 12:27:35.072	ca4496d1-02ba-4851-9b88-7f21ea0b0692	{4f053667-43c6-4d17-9ff2-69457e2c1fe3}	0	0
 05faafc9-6043-4413-8d76-d810edc49dc8	Фаршировані печериці	Апетитна закуска для святкового столу.	25	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765885556/%D0%A4%D0%B0%D1%80%D1%88%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D1%96-%D0%BF%D0%B5%D1%87%D0%B5%D1%80%D0%B8%D1%86%D1%96_raohvm.png		1	{Шампіньйони,"Твердий сир",Часник,Сметана,Зелень,Сіль,Перець}	{"Вийміть ніжки з грибів та дрібно наріжте.","Змішайте їх із сиром, сметаною, часником та зеленню.","Наповніть шапочки грибів сумішшю.","Запікайте 15–20 хвилин при 180°C."}	9c609877-b2d1-4b90-a21e-44412565a444	2025-12-14 10:02:02.030898	2025-12-19 18:01:42.685	4fb74c45-963a-4442-9fe8-2fad1400067d	{4f053667-43c6-4d17-9ff2-69457e2c1fe3}	0	0
 503e126e-b825-4bff-a87f-a42f10a82d46	Млинці з червоною ікрою	Святкова закуска з млинців та червоної ікри.	20	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765885539/%D0%9C%D0%BB%D0%B8%D0%BD%D1%86%D1%96-%D0%B7-%D1%87%D0%B5%D1%80%D0%B2%D0%BE%D0%BD%D0%BE%D1%8E-%D1%96%D0%BA%D1%80%D0%BE%D1%8E_jj2xdy.png		2	{Борошно,Молоко,Яйця,Сіль,"Ікра червона",Сметана}	{"Приготуйте тонкі млинці з борошна, молока, яєць та солі.","Намажте млинці сметаною.","Викладіть трохи ікри на кожен млинець.","Скрутіть рулетом і наріжте порційними шматочками."}	9c609877-b2d1-4b90-a21e-44412565a444	2025-12-14 10:02:07.06156	2025-12-20 12:03:56.339	4fb74c45-963a-4442-9fe8-2fad1400067d	{da40a9cd-f2cb-44ea-a257-3f9d1b6453f9,4f053667-43c6-4d17-9ff2-69457e2c1fe3}	0	0
-01ac7c33-fc2d-41e5-81d9-24f64bc4d5c7	Омлет з овочами	Легкий та поживний омлет з ніжними овочами, підходить для дитячого сніданку або обіду.	12	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765885548/%D0%9E%D0%BC%D0%BB%D0%B5%D1%82-%D0%B7-%D0%BE%D0%B2%D0%BE%D1%87%D0%B0%D0%BC%D0%B8_mwien1.png		3	{Яйця,Молоко,Морква,Броколі,Сіль,"Вершкове масло"}	{"Збийте яйця з молоком і дрібкою солі.","Натріть моркву та дрібно наріжте броколі.","Злегка обсмажте овочі на вершковому маслі.","Залийте овочі яєчною сумішшю.","Готуйте на слабкому вогні під кришкою до готовності.","Подавайте теплим."}	4f053667-43c6-4d17-9ff2-69457e2c1fe3	2025-12-15 15:59:52.285258	2025-12-22 23:14:25.016	193d83ca-25dd-45a6-8c19-3ec2ea042e3b	{9c609877-b2d1-4b90-a21e-44412565a444,fdc5399f-cadb-4f54-a91b-50ad67c91142,6ba456f1-97c1-4a61-ac79-e4afdbad3b19}	4.3	4
 6a54452f-87c6-47ed-b199-254ec9515ae0	Бананові млинці	Ніжні млинці з бананом для сніданку дітей.	15	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765885533/%D0%BC%D0%BB%D0%B8%D0%BD%D1%86%D1%96-%D0%B7-%D0%B1%D0%B0%D0%BD%D0%B0%D0%BD%D0%BE%D0%BC_nuqci8.png		3	{Банан,Яйця,Борошно,Молоко,Цукор,Ваніль}	{"Розімніть банан виделкою.","Додайте яйця, молоко, борошно, цукор та ваніль.","Змішайте до однорідної маси.","Смажте млинці на сковороді з обох боків до золотистого кольору."}	9c609877-b2d1-4b90-a21e-44412565a444	2025-12-14 10:02:50.88917	2025-12-20 19:38:41.199	193d83ca-25dd-45a6-8c19-3ec2ea042e3b	{da40a9cd-f2cb-44ea-a257-3f9d1b6453f9,4f053667-43c6-4d17-9ff2-69457e2c1fe3,fdc5399f-cadb-4f54-a91b-50ad67c91142}	4	1
 d73dac0d-5080-4507-9df0-3ac72215efe6	Вівсяна каша з яблуком	Ніжна вівсяна каша з яблуком та корицею, корисна і смачна для дітей.	10	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765885531/%D0%92%D1%96%D0%B2%D1%81%D1%8F%D0%BD%D0%B0-%D0%BA%D0%B0%D1%88%D0%B0-%D0%B7-%D1%8F%D0%B1%D0%BB%D1%83%D0%BA%D0%BE%D0%BC_cthvp9.png		2	{"Вівсяні пластівці",Молоко,Яблуко,Цукор,Кориця,"Вершкове масло"}	{"Закипʼятіть молоко в каструлі.","Додайте вівсяні пластівці та варіть на слабкому вогні.","Натріть яблуко або дрібно наріжте.","Додайте яблуко, трохи цукру та кориці.","Варіть ще кілька хвилин до мʼякої консистенції.","Додайте невеликий шматочок вершкового масла перед подачею."}	4f053667-43c6-4d17-9ff2-69457e2c1fe3	2025-12-15 15:39:09.461512	2025-12-17 18:48:33.839	193d83ca-25dd-45a6-8c19-3ec2ea042e3b	{9c609877-b2d1-4b90-a21e-44412565a444,da40a9cd-f2cb-44ea-a257-3f9d1b6453f9}	3.5	2
-0111302a-4715-48c2-b1ee-1894c6bd8b2e	Сирники для дітей	Мʼякі та корисні сирники без зайвого цукру, ідеальні для дитячого сніданку.	20	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765885549/%D0%A1%D0%B8%D1%80%D0%BD%D0%B8%D0%BA%D0%B8-%D0%B4%D0%BB%D1%8F-%D0%B4%D1%96%D1%82%D0%B5%D0%B8%CC%86_t8rnjc.png		2	{Сир,Яйце,Борошно,Цукор,Ваніль,Сметана}	{"Перетріть сир до однорідної консистенції.","Додайте яйце, трохи цукру та ваніль.","Всипте борошно і добре перемішайте.","Сформуйте невеликі сирники.","Обсмажте на середньому вогні до золотистої скоринки.","Подавайте зі сметаною."}	4f053667-43c6-4d17-9ff2-69457e2c1fe3	2025-12-15 15:37:12.202621	2025-12-22 22:07:00.622	193d83ca-25dd-45a6-8c19-3ec2ea042e3b	{9c609877-b2d1-4b90-a21e-44412565a444,da40a9cd-f2cb-44ea-a257-3f9d1b6453f9}	5	2
+01ac7c33-fc2d-41e5-81d9-24f64bc4d5c7	Омлет з овочами	Легкий та поживний омлет з ніжними овочами, підходить для дитячого сніданку або обіду.	12	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765885548/%D0%9E%D0%BC%D0%BB%D0%B5%D1%82-%D0%B7-%D0%BE%D0%B2%D0%BE%D1%87%D0%B0%D0%BC%D0%B8_mwien1.png		4	{Яйця,Молоко,Морква,Броколі,Сіль,"Вершкове масло"}	{"Збийте яйця з молоком і дрібкою солі.","Натріть моркву та дрібно наріжте броколі.","Злегка обсмажте овочі на вершковому маслі.","Залийте овочі яєчною сумішшю.","Готуйте на слабкому вогні під кришкою до готовності.","Подавайте теплим."}	4f053667-43c6-4d17-9ff2-69457e2c1fe3	2025-12-15 15:59:52.285258	2025-12-24 15:41:59.217	193d83ca-25dd-45a6-8c19-3ec2ea042e3b	{9c609877-b2d1-4b90-a21e-44412565a444,fdc5399f-cadb-4f54-a91b-50ad67c91142,6ba456f1-97c1-4a61-ac79-e4afdbad3b19,583b4d78-a2ba-4792-bef7-7f6caf42e913}	4.3	4
+f696b9f4-429e-486f-8086-78003be4da39	Смажені млинці з зеленню	Смажені сирники по бабусиному рецепту з шматочками свіжої зелені	30	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766582467/recipes/zz1dycnmionrafl6j55e.webp		2	{"500 гр. домашній сир","2 яйця","200гр. борошна","50гп. олії"}	{"Ретельно перемішати сир з яйцем та лдодати борошно","Дати вистоятись 30 хвилин","Зформувати сирнички приблизно по 5 сантиметрів","Посмажити та дати охолонути","Найкраще смакує з сметаною."}	583b4d78-a2ba-4792-bef7-7f6caf42e913	2025-12-24 13:21:08.711525	2025-12-24 15:32:23.324	d9b0b1f3-f3f4-490b-aaab-3c42eeaecd20	{9c609877-b2d1-4b90-a21e-44412565a444,fdc5399f-cadb-4f54-a91b-50ad67c91142}	4	1
+0111302a-4715-48c2-b1ee-1894c6bd8b2e	Сирники для дітей	Мʼякі та корисні сирники без зайвого цукру, ідеальні для дитячого сніданку.	20	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765885549/%D0%A1%D0%B8%D1%80%D0%BD%D0%B8%D0%BA%D0%B8-%D0%B4%D0%BB%D1%8F-%D0%B4%D1%96%D1%82%D0%B5%D0%B8%CC%86_t8rnjc.png		3	{Сир,Яйце,Борошно,Цукор,Ваніль,Сметана}	{"Перетріть сир до однорідної консистенції.","Додайте яйце, трохи цукру та ваніль.","Всипте борошно і добре перемішайте.","Сформуйте невеликі сирники.","Обсмажте на середньому вогні до золотистої скоринки.","Подавайте зі сметаною."}	4f053667-43c6-4d17-9ff2-69457e2c1fe3	2025-12-15 15:37:12.202621	2025-12-24 15:41:54.103	193d83ca-25dd-45a6-8c19-3ec2ea042e3b	{9c609877-b2d1-4b90-a21e-44412565a444,da40a9cd-f2cb-44ea-a257-3f9d1b6453f9,583b4d78-a2ba-4792-bef7-7f6caf42e913}	5	2
 \.
 
 
@@ -317,6 +400,7 @@ bd268c8e-824a-478d-8599-12026295aa33	0111302a-4715-48c2-b1ee-1894c6bd8b2e	fe45c3
 0d94b80a-252b-4810-bedc-8de311496add	6a54452f-87c6-47ed-b199-254ec9515ae0	fe45c3fb-f5e7-4c8b-8e11-88ca5bb5a234	4	\N	Дуже смачно і просто в приготуванні, обовʼязково готуватиму ще.	f	2025-12-23 09:16:37.905587
 7ab37bac-4274-4bc7-8d8a-dd76269227c7	90cfcc5f-5f89-4b05-b247-3fe5d5fd3bdc	fe45c3fb-f5e7-4c8b-8e11-88ca5bb5a234	5	\N	Рецепт сподобався всій родині, особливо дітям.	f	2025-12-23 09:17:12.326874
 4f290639-a6f3-4f37-a170-7f7d96553b36	e6466dbd-e08f-4df6-a742-ab631acfbfc8	fe45c3fb-f5e7-4c8b-8e11-88ca5bb5a234	5	\N	Чудове поєднання інгредієнтів, смак перевершив очікування.	f	2025-12-23 09:17:40.284063
+32f0a4f5-13d9-4c72-bf2e-5dc8aa48438e	f696b9f4-429e-486f-8086-78003be4da39	f06293a8-4159-40d5-a103-cfd146f07d95	4	\N	Дякую за рецепт. обовяязково спробуємо	f	2025-12-24 13:21:50.924674
 \.
 
 
@@ -325,17 +409,17 @@ bd268c8e-824a-478d-8599-12026295aa33	0111302a-4715-48c2-b1ee-1894c6bd8b2e	fe45c3
 --
 
 COPY public.user_profiles (first_name, last_name, bio, avatar_url, banner_url, location, website, instagram, tiktok, facebook, youtube, followers_count, following_count, recipes_count, likes_received, is_private, language, theme, created_at, updated_at, user_id, id, liked_recipes) FROM stdin;
-\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811668/dog_urgwjo.png	\N	\N	\N	\N	\N	\N	\N	0	0	0	0	f	en	light	2025-12-09 21:07:41.440492	2025-12-09 21:07:41.440492	b5d166c0-8d8b-44ed-8d07-f7759a7f426b	e8081c44-d6b8-441e-907d-2cfb1f0ef73d	{}
+Nets	Slavik	test	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766434391/avatars/ykdf0jtdmfoeiaxfj5ng.webp	\N	\N	\N	\N	\N	\N	\N	1	0	0	0	f	ua	light	2025-12-12 13:10:29.497024	2025-12-12 13:10:29.497024	6ba456f1-97c1-4a61-ac79-e4afdbad3b19	9b8bacf9-423d-4739-8a07-61bdcd9ce652	{01ac7c33-fc2d-41e5-81d9-24f64bc4d5c7}
+\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811668/dog_urgwjo.png	\N	\N	\N	\N	\N	\N	\N	1	0	0	0	f	en	light	2025-12-09 21:07:41.440492	2025-12-09 21:07:41.440492	b5d166c0-8d8b-44ed-8d07-f7759a7f426b	e8081c44-d6b8-441e-907d-2cfb1f0ef73d	{}
+Naz	Lysak	description	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766252293/avatars/rvzh9qypu9iq19z9jxjt.webp	\N	\N	\N	\N	\N	\N	\N	2	3	0	0	f	en	light	2025-12-18 17:01:14.705865	2025-12-18 17:01:14.705865	fdc5399f-cadb-4f54-a91b-50ad67c91142	0e54244e-8c08-4ee6-b7b4-24aed08f9500	{01ac7c33-fc2d-41e5-81d9-24f64bc4d5c7,6a54452f-87c6-47ed-b199-254ec9515ae0,f696b9f4-429e-486f-8086-78003be4da39}
+Maria	Koval	Food lover & home chef. Sharing my favorite recipes.	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766250988/avatars/fmk5tkjcwbhxihs6qcvg.webp	https://example.com/banners/maria.jpg	Lviv Ukraine	https://maria-koval.com	https://www.instagram.com/maria.cooks/	https://www.tiktok.com/@maria_kitchen	https://www.facebook.com/maria.koval	https://www.youtube.com/@MariaCooks	3	3	56	27	t	ua	light	2025-12-09 21:07:26.414738	2025-12-09 21:07:26.414738	9c609877-b2d1-4b90-a21e-44412565a444	f06293a8-4159-40d5-a103-cfd146f07d95	{01ac7c33-fc2d-41e5-81d9-24f64bc4d5c7,d73dac0d-5080-4507-9df0-3ac72215efe6,0111302a-4715-48c2-b1ee-1894c6bd8b2e,f696b9f4-429e-486f-8086-78003be4da39}
+\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811672/fox_pgf15d.png	\N	\N	\N	\N	\N	\N	\N	1	4	0	0	f	en	light	2025-12-12 13:36:10.446354	2025-12-12 13:36:10.446354	da40a9cd-f2cb-44ea-a257-3f9d1b6453f9	5d839e0f-8776-481b-8367-ffa141bb811e	{e6466dbd-e08f-4df6-a742-ab631acfbfc8,d73dac0d-5080-4507-9df0-3ac72215efe6,0111302a-4715-48c2-b1ee-1894c6bd8b2e,6a54452f-87c6-47ed-b199-254ec9515ae0,90cfcc5f-5f89-4b05-b247-3fe5d5fd3bdc,503e126e-b825-4bff-a87f-a42f10a82d46,d029cefe-333e-45fa-9d2c-c5bab778d52d,ad71ad1d-fdd7-4fda-a22a-b8c68adfef64,2d274146-719f-4950-abd1-96f9028e89f0,ff1eb6a6-e9c1-402f-908f-69c4baa7cdac}
+Name	Lastname	description	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766583468/avatars/oewv7joqekngyvrbztbw.webp	\N	\N	\N	\N	\N	\N	\N	0	0	0	0	f	en	light	2025-12-12 13:20:06.116672	2025-12-12 13:20:06.116672	6fdb3cf5-bbe1-40f4-b98b-65dc7f6375f5	fef0a02e-d7b4-45ac-91f9-9c2102422685	{}
+\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811668/cat_zg5tls.png	\N	\N	\N	\N	\N	\N	\N	4	3	1	2	f	ua	light	2025-12-09 21:07:51.864922	2025-12-09 21:07:51.864922	583b4d78-a2ba-4792-bef7-7f6caf42e913	adafc4ce-cf06-497c-92c6-213eaccb49f0	{0111302a-4715-48c2-b1ee-1894c6bd8b2e,01ac7c33-fc2d-41e5-81d9-24f64bc4d5c7}
 \N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811669/koala_gk8qbb.png	\N	\N	\N	\N	\N	\N	\N	0	0	0	0	f	en	light	2025-12-09 21:08:09.216338	2025-12-09 21:08:09.216338	385a93e2-b6f4-4eea-9aaa-e2fb5162c1ae	69163239-4cbd-4e1f-a755-816b49bba643	{}
-\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811670/bear_udusdj.png	\N	\N	\N	\N	\N	\N	\N	0	0	0	0	f	en	dark	2025-12-09 22:01:08.895802	2025-12-09 22:01:08.895802	a172f6b8-46f6-47a5-999f-c0181db58bca	ecc13c45-c1e7-490a-8155-647052c2dd8a	{}
-\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811668/elephant_mtczib.png	\N	\N	\N	\N	\N	\N	\N	2	0	0	0	f	en	light	2025-12-09 21:08:00.909056	2025-12-09 21:08:00.909056	6d5c01a0-c599-4c73-aada-ccfa8dd6155b	206bf333-b6dc-4cb8-a531-8ba42a91e9c7	{}
-\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811672/fox_pgf15d.png	\N	\N	\N	\N	\N	\N	\N	0	4	0	0	f	en	light	2025-12-12 13:36:10.446354	2025-12-12 13:36:10.446354	da40a9cd-f2cb-44ea-a257-3f9d1b6453f9	5d839e0f-8776-481b-8367-ffa141bb811e	{e6466dbd-e08f-4df6-a742-ab631acfbfc8,d73dac0d-5080-4507-9df0-3ac72215efe6,0111302a-4715-48c2-b1ee-1894c6bd8b2e,6a54452f-87c6-47ed-b199-254ec9515ae0,90cfcc5f-5f89-4b05-b247-3fe5d5fd3bdc,503e126e-b825-4bff-a87f-a42f10a82d46,d029cefe-333e-45fa-9d2c-c5bab778d52d,ad71ad1d-fdd7-4fda-a22a-b8c68adfef64,2d274146-719f-4950-abd1-96f9028e89f0,ff1eb6a6-e9c1-402f-908f-69c4baa7cdac}
-\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811668/cat_zg5tls.png	\N	\N	\N	\N	\N	\N	\N	3	0	0	0	f	en	light	2025-12-09 21:07:51.864922	2025-12-09 21:07:51.864922	583b4d78-a2ba-4792-bef7-7f6caf42e913	adafc4ce-cf06-497c-92c6-213eaccb49f0	{}
-Maria	Koval	Food lover & home chef. Sharing my favorite recipes.	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766250988/avatars/fmk5tkjcwbhxihs6qcvg.webp	https://example.com/banners/maria.jpg	Lviv Ukraine	https://maria-koval.com	https://www.instagram.com/maria.cooks/	https://www.tiktok.com/@maria_kitchen	https://www.facebook.com/maria.koval	https://www.youtube.com/@MariaCooks	3	0	56	27	t	en	light	2025-12-09 21:07:26.414738	2025-12-09 21:07:26.414738	9c609877-b2d1-4b90-a21e-44412565a444	f06293a8-4159-40d5-a103-cfd146f07d95	{01ac7c33-fc2d-41e5-81d9-24f64bc4d5c7,d73dac0d-5080-4507-9df0-3ac72215efe6,0111302a-4715-48c2-b1ee-1894c6bd8b2e}
-Name	Lastname	description	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766252160/avatars/yjhlyvsbfzsc6ibnwipk.webp	\N	\N	\N	\N	\N	\N	\N	0	0	0	0	f	en	light	2025-12-12 13:20:06.116672	2025-12-12 13:20:06.116672	6fdb3cf5-bbe1-40f4-b98b-65dc7f6375f5	fef0a02e-d7b4-45ac-91f9-9c2102422685	{}
-Naz	Lysak	description	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766252293/avatars/rvzh9qypu9iq19z9jxjt.webp	\N	\N	\N	\N	\N	\N	\N	0	3	0	0	f	en	light	2025-12-18 17:01:14.705865	2025-12-18 17:01:14.705865	fdc5399f-cadb-4f54-a91b-50ad67c91142	0e54244e-8c08-4ee6-b7b4-24aed08f9500	{01ac7c33-fc2d-41e5-81d9-24f64bc4d5c7,6a54452f-87c6-47ed-b199-254ec9515ae0}
-Nazarii	Lysak	Люблю готувати та експериментувати зі смаками, знаходячи натхнення у простих і смачних рецептах. Кухня для мене — це спосіб ділитися теплом, настроєм і гарним настроєм з іншими.	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766252531/avatars/enha8ylzxsgxaoggvtqi.webp	\N	Україна - Львів	https://github.com/Nazar-Lysak/	https://www.instagram.com/	\N	https://www.facebook.com/	https://www.youtube.com/	2	3	3	7	t	ua	light	2025-12-15 15:32:34.632219	2025-12-15 15:32:34.632219	4f053667-43c6-4d17-9ff2-69457e2c1fe3	fe45c3fb-f5e7-4c8b-8e11-88ca5bb5a234	{90cfcc5f-5f89-4b05-b247-3fe5d5fd3bdc,e6466dbd-e08f-4df6-a742-ab631acfbfc8,a3d8a86d-1b14-48b1-82e0-15aaa0e6bef0,ad71ad1d-fdd7-4fda-a22a-b8c68adfef64,a1892c72-5b30-44a4-ac37-78b39adddc82,9d5233e0-14f2-4d35-a47b-f3ff94bb4a14,a4ffe3b4-d442-45e9-8c9b-59ef86388082,b8a9aa19-d179-4637-9426-0b2b4d6e62e5,dc2fae41-4285-4d41-afc7-0820eeb7d5a1,88ac92f5-7eef-42fe-b780-58ef8b13746d,024d3739-be5b-4a33-b3e4-500bced133aa,8194f7cb-879d-4346-b611-a43303355bda,05faafc9-6043-4413-8d76-d810edc49dc8,1bcbc119-268e-4d41-a274-4833a526ec6b,6a54452f-87c6-47ed-b199-254ec9515ae0,56513ebd-af2a-40ec-848a-86c8739bf8ff,503e126e-b825-4bff-a87f-a42f10a82d46,38add7c0-c10f-43c8-bd5f-b7b2d745f2b6}
-Nets	Slavik	test	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766434391/avatars/ykdf0jtdmfoeiaxfj5ng.webp	\N	\N	\N	\N	\N	\N	\N	0	0	0	0	f	ua	light	2025-12-12 13:10:29.497024	2025-12-12 13:10:29.497024	6ba456f1-97c1-4a61-ac79-e4afdbad3b19	9b8bacf9-423d-4739-8a07-61bdcd9ce652	{01ac7c33-fc2d-41e5-81d9-24f64bc4d5c7}
+\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811670/bear_udusdj.png	\N	\N	\N	\N	\N	\N	\N	1	0	0	0	f	en	dark	2025-12-09 22:01:08.895802	2025-12-09 22:01:08.895802	a172f6b8-46f6-47a5-999f-c0181db58bca	ecc13c45-c1e7-490a-8155-647052c2dd8a	{}
+\N	\N	\N	https://res.cloudinary.com/dohg7oxwo/image/upload/v1765811668/elephant_mtczib.png	\N	\N	\N	\N	\N	\N	\N	1	0	0	0	f	en	light	2025-12-09 21:08:00.909056	2025-12-09 21:08:00.909056	6d5c01a0-c599-4c73-aada-ccfa8dd6155b	206bf333-b6dc-4cb8-a531-8ba42a91e9c7	{}
+Nazarii	Lysak	Люблю готувати та експериментувати зі смаками, знаходячи натхнення у простих і смачних рецептах. Кухня для мене — це спосіб ділитися теплом, настроєм і гарним настроєм з іншими.	https://res.cloudinary.com/dohg7oxwo/image/upload/v1766252531/avatars/enha8ylzxsgxaoggvtqi.webp	\N	Україна - Львів	https://github.com/Nazar-Lysak/	https://www.instagram.com/	\N	https://www.facebook.com/	https://www.youtube.com/	3	4	3	9	t	ua	light	2025-12-15 15:32:34.632219	2025-12-15 15:32:34.632219	4f053667-43c6-4d17-9ff2-69457e2c1fe3	fe45c3fb-f5e7-4c8b-8e11-88ca5bb5a234	{90cfcc5f-5f89-4b05-b247-3fe5d5fd3bdc,e6466dbd-e08f-4df6-a742-ab631acfbfc8,a3d8a86d-1b14-48b1-82e0-15aaa0e6bef0,ad71ad1d-fdd7-4fda-a22a-b8c68adfef64,a1892c72-5b30-44a4-ac37-78b39adddc82,9d5233e0-14f2-4d35-a47b-f3ff94bb4a14,a4ffe3b4-d442-45e9-8c9b-59ef86388082,b8a9aa19-d179-4637-9426-0b2b4d6e62e5,dc2fae41-4285-4d41-afc7-0820eeb7d5a1,88ac92f5-7eef-42fe-b780-58ef8b13746d,024d3739-be5b-4a33-b3e4-500bced133aa,8194f7cb-879d-4346-b611-a43303355bda,05faafc9-6043-4413-8d76-d810edc49dc8,1bcbc119-268e-4d41-a274-4833a526ec6b,6a54452f-87c6-47ed-b199-254ec9515ae0,56513ebd-af2a-40ec-848a-86c8739bf8ff,503e126e-b825-4bff-a87f-a42f10a82d46,38add7c0-c10f-43c8-bd5f-b7b2d745f2b6}
 \.
 
 
@@ -369,11 +453,27 @@ fdc5399f-cadb-4f54-a91b-50ad67c91142	Nazarii.Lysak@ua.nestle.com	Nazarii	$2b$10$
 
 
 --
+-- Name: chats PK_0117647b3c4a4e5ff198aeb6206; Type: CONSTRAINT; Schema: public; Owner: nestuser
+--
+
+ALTER TABLE ONLY public.chats
+    ADD CONSTRAINT "PK_0117647b3c4a4e5ff198aeb6206" PRIMARY KEY (id);
+
+
+--
 -- Name: follow_profiles PK_0da03f60755e8dd414f328e6c10; Type: CONSTRAINT; Schema: public; Owner: nestuser
 --
 
 ALTER TABLE ONLY public.follow_profiles
     ADD CONSTRAINT "PK_0da03f60755e8dd414f328e6c10" PRIMARY KEY (id, "followerId", "followingId");
+
+
+--
+-- Name: messages PK_18325f38ae6de43878487eff986; Type: CONSTRAINT; Schema: public; Owner: nestuser
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT "PK_18325f38ae6de43878487eff986" PRIMARY KEY (id);
 
 
 --
@@ -398,6 +498,14 @@ ALTER TABLE ONLY public.reviews
 
 ALTER TABLE ONLY public.categories
     ADD CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY (id);
+
+
+--
+-- Name: chats_participants_users PK_8927abbb3526ba8390b651b4675; Type: CONSTRAINT; Schema: public; Owner: nestuser
+--
+
+ALTER TABLE ONLY public.chats_participants_users
+    ADD CONSTRAINT "PK_8927abbb3526ba8390b651b4675" PRIMARY KEY ("chatsId", "usersId");
 
 
 --
@@ -465,10 +573,48 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- Name: IDX_5771c3686b4165c67c8f810302; Type: INDEX; Schema: public; Owner: nestuser
+--
+
+CREATE INDEX "IDX_5771c3686b4165c67c8f810302" ON public.chats_participants_users USING btree ("usersId");
+
+
+--
+-- Name: IDX_b66415a2051b0c7cd1961bfbbf; Type: INDEX; Schema: public; Owner: nestuser
+--
+
+CREATE INDEX "IDX_b66415a2051b0c7cd1961bfbbf" ON public.chats_participants_users USING btree ("chatsId");
+
+
+--
 -- Name: IDX_facfa65cec881e1d583b35eb61; Type: INDEX; Schema: public; Owner: nestuser
 --
 
 CREATE INDEX "IDX_facfa65cec881e1d583b35eb61" ON public.reset_passwords USING btree (token);
+
+
+--
+-- Name: messages FK_2db9cf2b3ca111742793f6c37ce; Type: FK CONSTRAINT; Schema: public; Owner: nestuser
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT "FK_2db9cf2b3ca111742793f6c37ce" FOREIGN KEY ("senderId") REFERENCES public.users(id);
+
+
+--
+-- Name: messages FK_36bc604c820bb9adc4c75cd4115; Type: FK CONSTRAINT; Schema: public; Owner: nestuser
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT "FK_36bc604c820bb9adc4c75cd4115" FOREIGN KEY ("chatId") REFERENCES public.chats(id);
+
+
+--
+-- Name: chats_participants_users FK_5771c3686b4165c67c8f8103024; Type: FK CONSTRAINT; Schema: public; Owner: nestuser
+--
+
+ALTER TABLE ONLY public.chats_participants_users
+    ADD CONSTRAINT "FK_5771c3686b4165c67c8f8103024" FOREIGN KEY ("usersId") REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -512,6 +658,22 @@ ALTER TABLE ONLY public.recipes
 
 
 --
+-- Name: chats_participants_users FK_b66415a2051b0c7cd1961bfbbf5; Type: FK CONSTRAINT; Schema: public; Owner: nestuser
+--
+
+ALTER TABLE ONLY public.chats_participants_users
+    ADD CONSTRAINT "FK_b66415a2051b0c7cd1961bfbbf5" FOREIGN KEY ("chatsId") REFERENCES public.chats(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: follow_profiles FK_c6a13a5a0235a0023c68eebbf44; Type: FK CONSTRAINT; Schema: public; Owner: nestuser
+--
+
+ALTER TABLE ONLY public.follow_profiles
+    ADD CONSTRAINT "FK_c6a13a5a0235a0023c68eebbf44" FOREIGN KEY ("followingId") REFERENCES public.users(id);
+
+
+--
 -- Name: recipes FK_d4097844785f4a027db682aa671; Type: FK CONSTRAINT; Schema: public; Owner: nestuser
 --
 
@@ -530,5 +692,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict eCu3SUo8dTInMZEqbCa9IWlUfgGEaHNuRPoCdhKwKfyeQonn4ajZaL8aDbGf4vG
+\unrestrict G0AILguNJI7xJYvVQC6ZJKKOI29BZbEsE8QWI2na5syYHzkat7rdtBqQzeXsfMU
 

@@ -40,7 +40,7 @@ export class UserService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.profile', 'profile', 'follow_profile')
       .getMany();
-      
+
     const createResult = users.map((user) => {
       const { password, ...result } = user;
       return result;
@@ -53,7 +53,7 @@ export class UserService {
       .createQueryBuilder('profile')
       .leftJoinAndSelect('profile.user', 'user');
 
-    if(query.date) {
+    if (query.date) {
       queryBuilder.orderBy('profile.created_at', 'DESC');
     } else if (query.top) {
       queryBuilder.orderBy('profile.likes_received', 'DESC');
@@ -68,22 +68,22 @@ export class UserService {
     }
 
     const profilesList = await queryBuilder.getMany();
-    
+
     const profiles = await Promise.all(
       profilesList.map(async (profile) => {
         const followers = await this.followProfileRepository.find({
           where: { followingId: profile.user.id },
         });
-        
+
         if (profile.user) {
           delete profile.user.password;
         }
-        
+
         return {
           ...profile,
           followers,
         };
-      })
+      }),
     );
 
     return { profiles };

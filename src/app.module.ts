@@ -11,6 +11,8 @@ import { AvatarGeneratorModule } from './avatar-generator/avatar-generator.modul
 import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
 import { ReviewModule } from './review/review.module';
+import { ChatModule } from './chat/chat.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { ReviewModule } from './review/review.module';
     AvatarGeneratorModule,
     MailModule,
     ReviewModule,
+    ChatModule,
+    MessageModule,
   ],
   providers: [MailService],
 })

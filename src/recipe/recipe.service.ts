@@ -97,7 +97,7 @@ export class RecipeService {
       queryBuilder.orderBy('recipe.createdAt', 'ASC');
     } else if (query.newest) {
       queryBuilder.orderBy('recipe.createdAt', 'DESC');
-    } else if(query.liked) {
+    } else if (query.liked) {
       queryBuilder.orderBy('recipe.favouriteCount', 'DESC');
     } else {
       queryBuilder.orderBy('recipe.createdAt', 'DESC');
