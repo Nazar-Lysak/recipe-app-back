@@ -136,7 +136,7 @@ export class RecipeService {
   async getRecipeById(id: string): Promise<any> {
     const recipe = await this.recipeRepository.findOne({
       where: { id },
-      relations: ['reviews'],
+      relations: ['reviews', 'category'],
     });
 
     if (!recipe) {
