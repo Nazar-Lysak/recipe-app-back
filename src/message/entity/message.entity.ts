@@ -31,7 +31,4 @@ export class MessageEntity {
 
   @CreateDateColumn()
   createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

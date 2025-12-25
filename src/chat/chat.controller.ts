@@ -21,15 +21,15 @@ export class ChatController {
   @Get()
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
-  getChats() {
-    return this.chatService.getAllChats();
+  getMyChats(@Req() req): Promise<any> {
+    return this.chatService.getMyChats(req.user.id);
   }
 
   @Get(':chatId')
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
-  getMyChats(@Param('chatId') chatId: string): Promise<ChatEntity[]> {
-    return this.chatService.getMyChats(chatId);
+  getSingleChat(@Param('chatId') chatId: string): Promise<any> {
+    return this.chatService.getSingleChat(chatId);
   }
 
   @Post()
@@ -38,7 +38,7 @@ export class ChatController {
   createChat(
     @Body() createChatDto: CreateChatDto,
     @Req() req,
-  ): Promise<ChatEntity> {
+  ): Promise<any> {
     return this.chatService.createChat(createChatDto, req.user.id);
   }
 }

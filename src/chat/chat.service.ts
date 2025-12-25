@@ -14,83 +14,25 @@ export class ChatService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async getAllChats(): Promise<ChatEntity[]> {
-    return this.chatRepository.find({
-      relations: ['participants', 'messages'],
-    });
+  async getMyChats(userId: string): Promise<any> {
+    
+
+
+
+    return {message: "get my chats"};
   }
 
-  async getMyChats(chatId: string): Promise<ChatEntity[]> {
-    const chat = await this.chatRepository.find({
-      where: { id: chatId },
-      relations: ['participants', 'messages', 'messages.sender'],
-      order: {
-        messages: {
-          createdAt: 'ASC',
-        },
-      },
-    });
+  async getSingleChat(chatId: string): Promise<any> {
 
-    if (!chat || chat.length === 0) {
-      throw new HttpException('Chat not found', HttpStatus.NOT_FOUND);
-    }
 
-    chat.forEach((c) => {
-      c.participants.forEach((p) => delete p.password);
-      c.messages.forEach((m) => {
-        if (m.sender) {
-          delete m.sender.password;
-        }
-      });
-    });
 
-    return chat;
+    return {message: "get single chat"};
   }
 
-  async createChat(dto: CreateChatDto, userId: string): Promise<ChatEntity> {
-    if (userId === dto.participantId) {
-      throw new HttpException(
-        'Cannot create chat with yourself',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  async createChat(dto: CreateChatDto, userId: string): Promise<any> {
+    
 
-    const existingChat = await this.chatRepository
-      .createQueryBuilder('chat')
-      .innerJoin('chat.participants', 'participant')
-      .where('participant.id IN (:...userIds)', {
-        userIds: [userId, dto.participantId],
-      })
-      .groupBy('chat.id')
-      .having('COUNT(DISTINCT participant.id) = 2')
-      .getOne();
 
-    if (existingChat) {
-      throw new HttpException('Chat already exists', HttpStatus.BAD_REQUEST);
-    }
-
-    const currentUser = await this.userRepository.findOne({
-      where: { id: userId },
-    });
-    const participant = await this.userRepository.findOne({
-      where: { id: dto.participantId },
-    });
-
-    if (!currentUser) {
-      throw new HttpException('Current user not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (!participant) {
-      throw new HttpException('Participant not found', HttpStatus.NOT_FOUND);
-    }
-
-    delete currentUser.password;
-    delete participant.password;
-
-    const newChat = this.chatRepository.create({
-      participants: [currentUser, participant],
-    });
-
-    return this.chatRepository.save(newChat);
+    return {message: "create chat"};
   }
 }

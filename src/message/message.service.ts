@@ -22,42 +22,8 @@ export class MessageService {
     createMessageDto: CreateMessageDto,
     userId: string,
   ) {
-    const chat = await this.chatRepository.findOne({
-      where: { id: chatId },
-      relations: ['participants'],
-    });
+    
 
-    if (!chat) {
-      throw new HttpException('Chat not found', HttpStatus.NOT_FOUND);
-    }
-
-    // Перевірка чи користувач є учасником чату
-    const participant = chat.participants.find((p) => p.id === userId);
-
-    if (!participant) {
-      throw new HttpException(
-        'You are not a participant of this chat',
-        HttpStatus.FORBIDDEN,
-      );
-    }
-
-    delete participant.password;
-
-    const message = this.messageRepository.create({
-      chat: chat, // Передаємо повний об'єкт чату
-      sender: participant,
-      content: createMessageDto.content,
-    });
-
-    const savedMessage = await this.messageRepository.save(message);
-
-    // Повертаємо чисте повідомлення без об'єкта chat
-    const { chat: _, ...messageWithoutChat } = savedMessage;
-
-    return {
-      ...messageWithoutChat,
-      sender: participant,
-      chatId: chatId,
-    };
+    return {message: "message created"};
   }
 }
