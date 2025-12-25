@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { AuthGuard } from '@/user/guards/auth.guard';
-import { CreateChatDto } from './dto/cteateChat.dto';
 import { ChatEntity } from './entity/chat.entity';
 
 @Controller('chats')
@@ -32,13 +31,10 @@ export class ChatController {
     return this.chatService.getSingleChat(chatId);
   }
 
-  @Post()
+  @Post(':userId')
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
-  createChat(
-    @Body() createChatDto: CreateChatDto,
-    @Req() req,
-  ): Promise<any> {
-    return this.chatService.createChat(createChatDto, req.user.id);
+  createChat(@Req() req, @Param('userId') userId: string): Promise<any> {
+    return this.chatService.createChat(userId, req.user);
   }
 }

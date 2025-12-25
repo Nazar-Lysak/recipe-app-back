@@ -38,7 +38,7 @@ export class UserService {
   async getAllUsers() {
     const users = await this.userRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.profile', 'profile', 'follow_profile')
+      .leftJoinAndSelect('user.profile', 'profile')
       .getMany();
 
     const createResult = users.map((user) => {

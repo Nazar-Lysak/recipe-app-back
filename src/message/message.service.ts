@@ -22,8 +22,6 @@ export class MessageService {
     createMessageDto: CreateMessageDto,
     userId: string,
   ) {
-    
-
-    return {message: "message created"};
+    return { message: 'message created' };
   }
 }
