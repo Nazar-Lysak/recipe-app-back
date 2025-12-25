@@ -14,40 +14,37 @@ export class ChatService {
   ) {}
 
   async getMyChats(userId: string): Promise<any> {
-    // Спочатку знаходимо ID чатів користувача
-    const chatIds = await this.chatRepository
+    const chats = await this.chatRepository
       .createQueryBuilder('chat')
-      .leftJoin('chat.participants', 'participant')
+      .leftJoinAndSelect('chat.participants', 'participant')
+      .leftJoinAndSelect('participant.profile', 'participantProfile')
+      .leftJoinAndSelect('chat.messages', 'message')
+      .leftJoinAndSelect('message.sender', 'sender')
+      .leftJoinAndSelect('sender.profile', 'senderProfile')
       .where('participant.id = :userId', { userId })
-      .select('chat.id')
-      .getRawMany();
+      .orderBy('message.createdAt', 'ASC')
+      .getMany();
 
-    if (chatIds.length === 0) {
+    if (chats.length === 0) {
       return [];
     }
 
-    const ids = chatIds.map((c) => c.chat_id);
+    const formattedChats = this.formatChatData(chats);
 
-    // Завантажуємо повні дані чатів
-    const chats = await this.chatRepository.find({
-      where: ids.map((id) => ({ id })),
-      relations: [
-        'participants',
-        'participants.profile',
-        'messages',
-        'messages.sender',
-        'messages.sender.profile',
-      ],
-      order: {
-        messages: {
-          createdAt: 'ASC',
-        },
-      },
+    // Додаємо інформацію про співрозмовника для кожного чату
+    const chatWith = formattedChats.map((chat) => {
+      const chatWith = chat.participants.filter((p) => p.id !== userId);
+      return {
+        ...chat,
+        chatWith: chatWith[0] || null,
+      };
     });
 
-    return this.formatChatData(chats);
+    return {
+      chats: [...chatWith],
+      chatsCount: chats.length,
+    };
   }
-
   async getSingleChat(chatId: string, userId: string): Promise<any> {
     const currentChat = await this.chatRepository.findOne({
       where: { id: chatId },
@@ -59,6 +56,8 @@ export class ChatService {
         'messages.sender.profile',
       ],
     });
+
+    const chatsCount = await this.chatRepository.countBy({ id: chatId });
 
     if (!currentChat) {
       throw new HttpException('Chat not found', HttpStatus.NOT_FOUND);
@@ -72,7 +71,8 @@ export class ChatService {
       );
     }
 
-    const formattedChat = this.formatChatData([currentChat]);
+    const formattedChats = this.formatChatData([currentChat]);
+    const formattedChat = formattedChats[0];
 
     const chatWith = formattedChat.participants.filter((p) => p.id !== userId);
 
@@ -84,8 +84,11 @@ export class ChatService {
     }
 
     return {
-      ...formattedChat,
-      chatWith: chatWith[0],
+      chats: {
+        ...formattedChat,
+        chatWith: chatWith[0],
+      },
+      chatsCount: chatsCount,
     };
   }
 
@@ -147,6 +150,6 @@ export class ChatService {
       };
     });
 
-    return filtredData[0];
+    return filtredData;
   }
 }
