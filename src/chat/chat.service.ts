@@ -48,6 +48,18 @@ export class ChatService {
       };
     });
 
+    // Сортуємо чати по даті останнього повідомлення (новіші вгорі)
+    chatsWithChatWith.sort((a, b) => {
+      const lastMessageA = a.messages[a.messages.length - 1];
+      const lastMessageB = b.messages[b.messages.length - 1];
+      
+      if (!lastMessageA && !lastMessageB) return 0;
+      if (!lastMessageA) return 1;
+      if (!lastMessageB) return -1;
+      
+      return new Date(lastMessageB.createdAt).getTime() - new Date(lastMessageA.createdAt).getTime();
+    });
+
     return {
       chats: chatsWithChatWith,
       chatsCount: chats.length,
