@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Req,
   UseGuards,
   UsePipes,
@@ -12,7 +13,10 @@ import {
 import { ChatService } from './chat.service';
 import { AuthGuard } from '@/user/guards/auth.guard';
 import { ChatEntity } from './entity/chat.entity';
-import { GetMyChatsResponse, GetSingleChatResponse } from './types/chat-response.interface';
+import {
+  GetMyChatsResponse,
+  GetSingleChatResponse,
+} from './types/chat-response.interface';
 
 @Controller('chats')
 export class ChatController {
@@ -28,7 +32,10 @@ export class ChatController {
   @Get(':chatId')
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
-  getSingleChat(@Req() req, @Param('chatId') chatId: string): Promise<GetSingleChatResponse> {
+  getSingleChat(
+    @Req() req,
+    @Param('chatId') chatId: string,
+  ): Promise<GetSingleChatResponse> {
     return this.chatService.getSingleChat(chatId, req.user.id);
   }
 

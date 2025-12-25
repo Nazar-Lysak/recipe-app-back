@@ -21,12 +21,13 @@ export class ChatService {
   async getMyChats(userId: string): Promise<GetMyChatsResponse> {
     const chats = await this.chatRepository
       .createQueryBuilder('chat')
+      .innerJoin('chat.participants', 'filterParticipant')
       .leftJoinAndSelect('chat.participants', 'participant')
       .leftJoinAndSelect('participant.profile', 'participantProfile')
       .leftJoinAndSelect('chat.messages', 'message')
       .leftJoinAndSelect('message.sender', 'sender')
       .leftJoinAndSelect('sender.profile', 'senderProfile')
-      .where('participant.id = :userId', { userId })
+      .where('filterParticipant.id = :userId', { userId })
       .orderBy('message.createdAt', 'ASC')
       .getMany();
 
@@ -37,8 +38,10 @@ export class ChatService {
     const formattedChats = this.formatChatData(chats);
 
     // Додаємо інформацію про співрозмовника для кожного чату
-    const chatWith = formattedChats.map((chat) => {
-      const chatWith = chat.participants.filter((p) => p.id !== userId);
+    const chatsWithChatWith = formattedChats.map((chat) => {
+      const chatWith = chat.participants.filter((p) => {
+        return p.id !== userId;
+      });
       return {
         ...chat,
         chatWith: chatWith[0] || null,
@@ -46,11 +49,14 @@ export class ChatService {
     });
 
     return {
-      chats: [...chatWith],
+      chats: chatsWithChatWith,
       chatsCount: chats.length,
     };
   }
-  async getSingleChat(chatId: string, userId: string): Promise<GetSingleChatResponse> {
+  async getSingleChat(
+    chatId: string,
+    userId: string,
+  ): Promise<GetSingleChatResponse> {
     const currentChat = await this.chatRepository.findOne({
       where: { id: chatId },
       relations: [
@@ -97,7 +103,10 @@ export class ChatService {
     };
   }
 
-  async createChat(participantId: string, user: UserEntity): Promise<ChatEntity> {
+  async createChat(
+    participantId: string,
+    user: UserEntity,
+  ): Promise<ChatEntity> {
     if (participantId === user.id) {
       throw new HttpException(
         'Cannot create chat with yourself',
@@ -142,9 +151,9 @@ export class ChatService {
           username: p.username,
           profile: {
             id: p?.profile?.id || '',
-            firstName: p?.profile?.avatar_url || '',
-            lastName: p?.profile?.first_name || '',
-            avatar: p?.profile?.last_name || '',
+            firstName: p?.profile?.first_name || '',
+            lastName: p?.profile?.last_name || '',
+            avatar: p?.profile?.avatar_url || '',
           },
         };
       });

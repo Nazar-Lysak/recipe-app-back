@@ -22,6 +22,65 @@ export class MessageService {
     createMessageDto: CreateMessageDto,
     userId: string,
   ) {
-    return { message: 'message created' };
+    const chat = await this.chatRepository.findOne({
+      where: { id: chatId },
+      relations: ['participants'],
+    });
+
+    if (!chat) {
+      throw new HttpException('Chat not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isParticipant = chat.participants.some(
+      (participant) => participant.id === userId,
+    );
+
+    if (!isParticipant) {
+      throw new HttpException('Access denied', HttpStatus.FORBIDDEN);
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const newMessage = this.messageRepository.create({
+      chat,
+      sender: user,
+      content: createMessageDto.content,
+    });
+
+    return await this.messageRepository.save(newMessage);
+  }
+
+  async markMessagesAsRead(chatId: string, userId: string): Promise<void> {
+    const chat = await this.chatRepository.findOne({
+      where: { id: chatId },
+      relations: ['participants', 'messages', 'messages.sender'],
+    });
+
+    if (!chat) {
+      throw new HttpException('Chat not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isParticipant = chat.participants.some(
+      (participant) => participant.id === userId,
+    );
+
+    if (!isParticipant) {
+      throw new HttpException('Access denied', HttpStatus.FORBIDDEN);
+    }
+
+    const unreadMessages = chat.messages.filter(
+      (message) => message.sender.id !== userId && !message.isRead,
+    );
+
+    for (const message of unreadMessages) {
+      message.isRead = true;
+      await this.messageRepository.save(message);
+    }
   }
 }

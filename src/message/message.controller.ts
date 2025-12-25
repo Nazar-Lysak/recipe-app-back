@@ -3,6 +3,7 @@ import {
   Controller,
   Param,
   Post,
+  Put,
   Req,
   UseGuards,
   UsePipes,
@@ -29,5 +30,15 @@ export class MessageController {
       createMessageDto,
       req.user.id,
     );
+  }
+
+  @Put(':chatId')
+  @UsePipes(new ValidationPipe())
+  @UseGuards(AuthGuard)
+  markMessagesAsRead(
+    @Req() req,
+    @Param('chatId') chatId: string,
+  ): Promise<void> {
+    return this.messageService.markMessagesAsRead(chatId, req.user.id);
   }
 }
