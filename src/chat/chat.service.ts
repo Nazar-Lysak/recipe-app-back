@@ -45,32 +45,48 @@ export class ChatService {
       },
     });
 
-    const filtredChatsData = chats.map((chat) => {
-      const p = chat.participants.map((p) => {
-        return {
-          email: p.email,
-          id: p.id,
-          username: p.username,
-          profile: {
-            id: p?.profile?.id || '',
-            firstName: p?.profile?.avatar_url || '',
-            lastName: p?.profile?.first_name || '',
-            avatar: p?.profile?.last_name || '',
-          },
-        };
-      });
-      return {
-        id: chat.id,
-        participants: p,
-        messages: chat.messages,
-      };
-    });
-
-    return filtredChatsData;
+    return this.formatChatData(chats);
   }
 
-  async getSingleChat(chatId: string): Promise<any> {
-    return { message: 'get single chat' };
+  async getSingleChat(chatId: string, userId: string): Promise<any> {
+    const currentChat = await this.chatRepository.findOne({
+      where: { id: chatId },
+      relations: [
+        'participants',
+        'participants.profile',
+        'messages',
+        'messages.sender',
+        'messages.sender.profile',
+      ],
+    });
+
+    if (!currentChat) {
+      throw new HttpException('Chat not found', HttpStatus.NOT_FOUND);
+    }
+
+    const isParticipant = currentChat.participants.some((p) => p.id === userId);
+    if (!isParticipant) {
+      throw new HttpException(
+        'You are not a participant of this chat',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const formattedChat = this.formatChatData([currentChat]);
+
+    const chatWith = formattedChat.participants.filter((p) => p.id !== userId);
+
+    if (chatWith.length === 0) {
+      throw new HttpException(
+        'Chat participant not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return {
+      ...formattedChat,
+      chatWith: chatWith[0],
+    };
   }
 
   async createChat(participantId: string, user: UserEntity): Promise<any> {
@@ -107,5 +123,30 @@ export class ChatService {
     });
 
     return this.chatRepository.save(newChat);
+  }
+
+  private formatChatData(data: ChatEntity[]): any {
+    const filtredData = data.map((chat) => {
+      const p = chat.participants.map((p) => {
+        return {
+          email: p.email,
+          id: p.id,
+          username: p.username,
+          profile: {
+            id: p?.profile?.id || '',
+            firstName: p?.profile?.avatar_url || '',
+            lastName: p?.profile?.first_name || '',
+            avatar: p?.profile?.last_name || '',
+          },
+        };
+      });
+      return {
+        id: chat.id,
+        participants: p,
+        messages: chat.messages,
+      };
+    });
+
+    return filtredData[0];
   }
 }

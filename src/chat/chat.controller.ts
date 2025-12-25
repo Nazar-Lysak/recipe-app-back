@@ -27,8 +27,8 @@ export class ChatController {
   @Get(':chatId')
   @UsePipes(new ValidationPipe())
   @UseGuards(AuthGuard)
-  getSingleChat(@Param('chatId') chatId: string): Promise<any> {
-    return this.chatService.getSingleChat(chatId);
+  getSingleChat(@Req() req, @Param('chatId') chatId: string): Promise<any> {
+    return this.chatService.getSingleChat(chatId, req.user.id);
   }
 
   @Post(':userId')
