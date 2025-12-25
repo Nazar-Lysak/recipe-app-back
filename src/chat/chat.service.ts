@@ -3,6 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ChatEntity } from './entity/chat.entity';
 import { UserEntity } from '@/user/entity/user.entity';
 import { Repository } from 'typeorm';
+import {
+  GetMyChatsResponse,
+  GetSingleChatResponse,
+  FormattedChat,
+} from './types/chat-response.interface';
 
 @Injectable()
 export class ChatService {
@@ -13,7 +18,7 @@ export class ChatService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async getMyChats(userId: string): Promise<any> {
+  async getMyChats(userId: string): Promise<GetMyChatsResponse> {
     const chats = await this.chatRepository
       .createQueryBuilder('chat')
       .leftJoinAndSelect('chat.participants', 'participant')
@@ -26,7 +31,7 @@ export class ChatService {
       .getMany();
 
     if (chats.length === 0) {
-      return [];
+      return { chats: [], chatsCount: 0 };
     }
 
     const formattedChats = this.formatChatData(chats);
@@ -45,7 +50,7 @@ export class ChatService {
       chatsCount: chats.length,
     };
   }
-  async getSingleChat(chatId: string, userId: string): Promise<any> {
+  async getSingleChat(chatId: string, userId: string): Promise<GetSingleChatResponse> {
     const currentChat = await this.chatRepository.findOne({
       where: { id: chatId },
       relations: [
@@ -92,7 +97,7 @@ export class ChatService {
     };
   }
 
-  async createChat(participantId: string, user: UserEntity): Promise<any> {
+  async createChat(participantId: string, user: UserEntity): Promise<ChatEntity> {
     if (participantId === user.id) {
       throw new HttpException(
         'Cannot create chat with yourself',
@@ -128,7 +133,7 @@ export class ChatService {
     return this.chatRepository.save(newChat);
   }
 
-  private formatChatData(data: ChatEntity[]): any {
+  private formatChatData(data: ChatEntity[]): FormattedChat[] {
     const filtredData = data.map((chat) => {
       const p = chat.participants.map((p) => {
         return {
