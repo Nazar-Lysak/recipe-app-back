@@ -1,5 +1,5 @@
-import { ChatEntity } from '@/chat/entity/chat.entity';
-import { UserEntity } from '@/user/entity/user.entity';
+import { ChatEntity } from '../chat/entity/chat.entity';
+import { UserEntity } from '../user/entity/user.entity';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

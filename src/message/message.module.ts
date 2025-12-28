@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { MessageController } from './message.controller';
-import { UserEntity } from '@/user/entity/user.entity';
+import { UserEntity } from '../user/entity/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ChatEntity } from '@/chat/entity/chat.entity';
+import { ChatEntity } from '../chat/entity/chat.entity';
 import { MessageEntity } from './entity/message.entity';
 
 @Module({

@@ -1,6 +1,6 @@
-import { CategoryEntity } from '@/category/entity/category.entity';
-import { ReviewEntity } from '@/review/entity/review.entity';
-import { UserEntity } from '@/user/entity/user.entity';
+import { CategoryEntity } from '../../category/entity/category.entity';
+import { ReviewEntity } from '../../review/entity/review.entity';
+import { UserEntity } from '../../user/entity/user.entity';
 import {
   BeforeUpdate,
   Column,

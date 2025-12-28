@@ -15,7 +15,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/createUser.dto';
 import { loginUserDto } from './dto/loginUser.dto';
-import type { AuthRequest } from '@/types/expressRequest.interface';
+import type { AuthRequest } from '../types/expressRequest.interface';
 import { AuthGuard } from './guards/auth.guard';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';

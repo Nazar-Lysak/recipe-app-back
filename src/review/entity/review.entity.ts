@@ -1,6 +1,6 @@
-import { RecipeEntity } from '@/recipe/entity/recipe.entity';
-import { UserProfileEntity } from '@/user/entity/user-profile.entity';
-import { UserEntity } from '@/user/entity/user.entity';
+import { RecipeEntity } from '../../recipe/entity/recipe.entity';
+import { UserProfileEntity } from '../../user/entity/user-profile.entity';
+import { UserEntity } from '../../user/entity/user.entity';
 import {
   Column,
   Entity,

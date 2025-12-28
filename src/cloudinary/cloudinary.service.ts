@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
-import cloudinaryConfig from '@/config/couldinary.config';
+import cloudinaryConfig from '../config/couldinary.config';
 import { UploadApiResponse, UploadApiErrorResponse } from 'cloudinary';
-import { AvatarGeneratorService } from '@/avatar-generator/avatar-generator.service';
+import { AvatarGeneratorService } from '../avatar-generator/avatar-generator.service';
 
 @Injectable()
 export class CloudinaryService {

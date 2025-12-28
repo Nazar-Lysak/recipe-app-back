@@ -10,10 +10,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entity/user.entity';
 import { UserProfileEntity } from './entity/user-profile.entity';
 import { AuthMiddleware } from './middlewares/auth.middleware';
-import { AvatarGeneratorModule } from '@/avatar-generator/avatar-generator.module';
+import { AvatarGeneratorModule } from '../avatar-generator/avatar-generator.module';
 import { FollowProfileEntity } from './entity/follow-profile.entity';
-import { CloudinaryModule } from '@/cloudinary/cloudinary.module';
-import { MailModule } from '@/mail/mail.module';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
+import { MailModule } from '../mail/mail.module';
 import { ResetPasswordEntity } from './entity/reset-password.entity';
 
 @Module({

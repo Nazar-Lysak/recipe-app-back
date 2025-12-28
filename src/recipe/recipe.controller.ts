@@ -14,14 +14,14 @@ import {
 } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import { CreateRecipeDto } from './dto/createRecipe.dto';
-import { UserEntity } from '@/user/entity/user.entity';
+import { UserEntity } from '../user/entity/user.entity';
 import { RecipeEntity } from './entity/recipe.entity';
-import { AuthGuard } from '@/user/guards/auth.guard';
+import { AuthGuard } from '../user/guards/auth.guard';
 import { getSingleRecipeDto } from './dto/getSingleRecipe.dto';
 import { DeleteResult } from 'typeorm';
 import { UpdateRecipeDto } from './dto/updateRecipe.dto';
 import { ApiTags, ApiBody } from '@nestjs/swagger';
-import { RecipesResponseInterface } from '@/types/recipesRespone.interfase';
+import { RecipesResponseInterface } from '../types/recipesRespone.interfase';
 
 @ApiTags('Recipes')
 @Controller('recipe')

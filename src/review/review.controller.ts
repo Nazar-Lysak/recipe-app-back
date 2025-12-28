@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ReviewService } from './review.service';
-import { AuthGuard } from '@/user/guards/auth.guard';
+import { AuthGuard } from '../user/guards/auth.guard';
 import { CreateReviewDto } from './dto/createReview.dto';
 
 @ApiTags('Reviews')

@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReviewEntity } from './entity/review.entity';
 import { Repository } from 'typeorm';
-import { RecipeEntity } from '@/recipe/entity/recipe.entity';
-import { UserProfileEntity } from '@/user/entity/user-profile.entity';
-import { CloudinaryService } from '@/cloudinary/cloudinary.service';
-import { CLOUDINARY_DIR } from '@/config/couldinary.config';
+import { RecipeEntity } from '../recipe/entity/recipe.entity';
+import { UserProfileEntity } from '../user/entity/user-profile.entity';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { CLOUDINARY_DIR } from '../config/couldinary.config';
 
 @Injectable()
 export class ReviewService {

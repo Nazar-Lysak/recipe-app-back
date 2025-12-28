@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserProfileEntity } from './user-profile.entity';
-import { RecipeEntity } from '@/recipe/entity/recipe.entity';
+import { RecipeEntity } from '../../recipe/entity/recipe.entity';
 import { ResetPasswordEntity } from './reset-password.entity';
 import { FollowProfileEntity } from './follow-profile.entity';
 

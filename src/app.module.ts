@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { UserModule } from '@/user/user.module';
+import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { CategoryModule } from './category/category.module';
 import { RecipeModule } from './recipe/recipe.module';
 import dbConfigProd from './config/db.config.prod';
-import dbConfigDev from '@/config/db.config.dev';
+import dbConfigDev from './config/db.config.dev';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AvatarGeneratorModule } from './avatar-generator/avatar-generator.module';
 import { MailService } from './mail/mail.service';

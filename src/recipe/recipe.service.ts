@@ -2,14 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeEntity } from './entity/recipe.entity';
 import { DeleteResult, Repository } from 'typeorm';
-import { UserEntity } from '@/user/entity/user.entity';
+import { UserEntity } from '../user/entity/user.entity';
 import { CreateRecipeDto } from './dto/createRecipe.dto';
 import { UpdateRecipeDto } from './dto/updateRecipe.dto';
-import { CategoryEntity } from '@/category/entity/category.entity';
-import { CloudinaryService } from '@/cloudinary/cloudinary.service';
-import { RecipesResponseInterface } from '@/types/recipesRespone.interfase';
-import { UserProfileEntity } from '@/user/entity/user-profile.entity';
-import { CLOUDINARY_DIR } from '@/config/couldinary.config';
+import { CategoryEntity } from '../category/entity/category.entity';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { RecipesResponseInterface } from '../types/recipesRespone.interfase';
+import { UserProfileEntity } from '../user/entity/user-profile.entity';
+import { CLOUDINARY_DIR } from '../config/couldinary.config';
 
 @Injectable()
 export class RecipeService {

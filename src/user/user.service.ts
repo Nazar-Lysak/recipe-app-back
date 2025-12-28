@@ -10,12 +10,12 @@ import { loginUserDto } from './dto/loginUser.dto';
 import { UserProfileEntity } from './entity/user-profile.entity';
 import { UpdateUserDto } from './dto/updateUser.dto';
 import { nanoid } from 'nanoid';
-import { AvatarGeneratorService } from '@/avatar-generator/avatar-generator.service';
+import { AvatarGeneratorService } from '../avatar-generator/avatar-generator.service';
 import { FollowProfileEntity } from './entity/follow-profile.entity';
-import { CloudinaryService } from '@/cloudinary/cloudinary.service';
-import { CLOUDINARY_DIR } from '@/config/couldinary.config';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
+import { CLOUDINARY_DIR } from '../config/couldinary.config';
 import { ChangePasswordDto } from './dto/changePassword.dto';
-import { MailService } from '@/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import { ResetPasswordEntity } from './entity/reset-password.entity';
 import { RestorePasswordDto } from './dto/restorePassword.dto';
 

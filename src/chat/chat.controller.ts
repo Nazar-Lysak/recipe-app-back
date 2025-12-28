@@ -11,7 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
-import { AuthGuard } from '@/user/guards/auth.guard';
+import { AuthGuard } from '../user/guards/auth.guard';
 import { ChatEntity } from './entity/chat.entity';
 import {
   GetMyChatsResponse,

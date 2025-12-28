@@ -10,7 +10,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { MessageService } from './message.service';
-import { AuthGuard } from '@/user/guards/auth.guard';
+import { AuthGuard } from '../user/guards/auth.guard';
 import { CreateMessageDto } from './dto/createMessage.dto';
 
 @Controller('messages')

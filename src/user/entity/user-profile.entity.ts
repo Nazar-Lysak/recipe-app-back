@@ -9,7 +9,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { ReviewEntity } from '@/review/entity/review.entity';
+import { ReviewEntity } from '../../review/entity/review.entity';
 
 @Entity('user_profiles')
 export class UserProfileEntity {
