@@ -30,8 +30,8 @@ async function bootstrap() {
     SwaggerModule.setup('api', app, documentFactory);
 
     app.enableCors({
-      origin: true,
-      credentials: true,
+      origin: '*',
+      credentials: false,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
     });
@@ -65,8 +65,8 @@ if (require.main === module) {
     SwaggerModule.setup('api', app, documentFactory);
 
     app.enableCors({
-      origin: true,
-      credentials: true,
+      origin: '*',
+      credentials: false,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization'],
     });
