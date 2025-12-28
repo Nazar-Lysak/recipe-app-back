@@ -1,7 +1,7 @@
 {
     "version": 2,
     "functions": {
-        "src/main.ts": {
+        "api/index.ts": {
             "memory": 1024,
             "maxDuration": 10
         }
@@ -9,7 +9,7 @@
     "rewrites": [
         {
             "source": "/(.*)",
-            "destination": "/src/main.ts"
+            "destination": "/api"
         }
     ],
     "headers": [
