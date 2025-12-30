@@ -73,6 +73,13 @@ export class RecipeService {
       .leftJoinAndSelect('author.profile', 'profile')
       .leftJoinAndSelect('recipe.category', 'category');
 
+    if(query?.search?.length > 0) {
+      queryBuilder.andWhere('recipe.name ILIKE :search OR recipe.description ILIKE :search', {
+        search: `%${query.search}%`,
+      });
+    }
+
+
     if (query.category) {
       queryBuilder.andWhere('category.id = :category', {
         category: query.category,
