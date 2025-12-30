@@ -144,7 +144,16 @@ export class ChatService {
       .getOne();
 
     if (existingChat) {
-      throw new HttpException('Chat already exists', HttpStatus.BAD_REQUEST);
+      // Повертаємо існуючий чат з індикацією для редіректу
+      const chatWithRelations = await this.chatRepository.findOne({
+        where: { id: existingChat.id },
+        relations: ['participants', 'participants.profile', 'messages'],
+      });
+      
+      return {
+        ...chatWithRelations,
+        redirectToExisting: true,
+      } as any;
     }
 
     const newChat = this.chatRepository.create({
