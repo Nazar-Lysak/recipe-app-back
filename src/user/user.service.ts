@@ -53,6 +53,10 @@ export class UserService {
       .createQueryBuilder('profile')
       .leftJoinAndSelect('profile.user', 'user');
 
+    if( query.search) {
+      queryBuilder.where('user.username ILIKE :search OR user.email ILIKE :search', { search: `%${query.search}%` });
+    }
+
     if (query.date) {
       queryBuilder.orderBy('profile.created_at', 'DESC');
     } else if (query.top) {
