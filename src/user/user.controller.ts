@@ -23,7 +23,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { GetUserByIdDto } from './dto/getUserById.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { RestorePasswordDto } from './dto/restorePassword.dto';
-import { UserEntity } from './entity/user.entity';
 import { UserResponseInterface } from './types/UserRecponse.interface';
 import { ProfilesResponseInterface } from './types/ProfilesResponse.interface';
 
