@@ -18,6 +18,8 @@ import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
 import { ResetPasswordEntity } from './entity/reset-password.entity';
 import { RestorePasswordDto } from './dto/restorePassword.dto';
+import { UserResponseInterface } from './types/UserRecponse.interface';
+import { ProfilesResponseInterface } from './types/ProfilesResponse.interface';
 
 @Injectable()
 export class UserService {
@@ -35,7 +37,7 @@ export class UserService {
     private readonly mailService: MailService,
   ) {}
 
-  async getAllUsers() {
+  async getAllUsers(): Promise<UserResponseInterface> {
     const users = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.profile', 'profile')
@@ -45,10 +47,11 @@ export class UserService {
       const { password, ...result } = user;
       return result;
     });
+
     return { users: createResult };
   }
 
-  async getAllProfiles(query): Promise<any> {
+  async getAllProfiles(query): Promise<ProfilesResponseInterface> {
     const queryBuilder = this.userProfileRepository
       .createQueryBuilder('profile')
       .leftJoinAndSelect('profile.user', 'user');
@@ -93,7 +96,8 @@ export class UserService {
     return { profiles };
   }
 
-  async getCurrentUser(user: any) {
+  async getCurrentUser(user: UserEntity | null | undefined): Promise<any> {
+    console.log('Current user:', user);
     if (!user) {
       throw new HttpException(
         'No authenticated user found',
